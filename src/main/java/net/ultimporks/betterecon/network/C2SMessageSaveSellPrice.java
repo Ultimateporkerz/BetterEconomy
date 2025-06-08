@@ -1,4 +1,4 @@
 package net.ultimporks.betterecon.network;
 
-public class S2CMessageBalance {
+public class C2SMessageSaveSellPrice {
 }
