@@ -1,5 +1,6 @@
 package net.ultimporks.betterecon.util.menu;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -12,38 +13,31 @@ import net.ultimporks.betterecon.block.entity.ShopBlockEntity;
 import net.ultimporks.betterecon.init.ModBlocks;
 import net.ultimporks.betterecon.init.ModMenuTypes;
 
-public class ShopMenu extends AbstractContainerMenu {
+public class ShopOwnerMenu extends AbstractContainerMenu {
     private final ShopBlockEntity blockEntity;
     private final Level level;
     private final ContainerData data;
-    private final boolean containerOwner;
 
-    public ShopMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
+    public ShopOwnerMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(1));
     }
 
-    public ShopMenu(int containerId, Inventory inv, BlockEntity blockEntity, ContainerData containerData) {
-        super(ModMenuTypes.SHOP_MENU.get(), containerId);
+    public ShopOwnerMenu(int containerId, Inventory inv, BlockEntity blockEntity, ContainerData containerData) {
+        super(ModMenuTypes.SHOP_OWNER_MENU.get(), containerId);
         this.blockEntity = ((ShopBlockEntity) blockEntity);
-        boolean isOwner = false;
-        if (blockEntity instanceof ShopBlockEntity shopBlock) {
-            isOwner = shopBlock.getOwner() != null && shopBlock.getOwner().equals(inv.player.getUUID());
-        }
-        this.containerOwner = isOwner;
         this.level = inv.player.level();
         this.data = containerData;
-
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-
-        if (isOwner) {
-            addItemForSaleSlot();
-            addShopInventory();
-        }
-
+        addItemForSaleSlot();
+        addShopInventory();
+        addRegisterInventory();
         addDataSlots(data);
     }
 
+    public BlockPos getBlockPos() {
+        return blockEntity.getBlockPos();
+    }
 
     @Override
     public boolean stillValid(Player player) {
@@ -52,13 +46,20 @@ public class ShopMenu extends AbstractContainerMenu {
     }
 
     private void addItemForSaleSlot() {
-        this.addSlot(new SlotItemHandler(blockEntity.itemForSale, 0, 8, 6));
+        this.addSlot(new SlotItemHandler(blockEntity.itemForSale, 0, 8, 8));
     }
+
+    private void addRegisterInventory() {
+        for (int i = 0; i < 6; ++i) {
+            this.addSlot(new SlotItemHandler(blockEntity.registerHandler, i, 8 + i * 18, 31));
+        }
+    }
+
 
     private void addShopInventory() {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new SlotItemHandler(blockEntity.itemHandler, l + i * 9, 8 + l * 18, 26 + i * 18));
+                this.addSlot(new SlotItemHandler(blockEntity.stockHandler, l + i * 9, 8 + l * 18, 53 + i * 18));
             }
         }
     }
@@ -66,13 +67,13 @@ public class ShopMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 111 + i * 18));
             }
         }
     }
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 169));
         }
     }
 

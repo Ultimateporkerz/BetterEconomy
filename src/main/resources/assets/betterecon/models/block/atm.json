@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "atm",
-		"particle": "atm"
+		"0": "betterecon:block/atm",
+		"particle": "betterecon:block/atm"
 	},
 	"elements": [
 		{

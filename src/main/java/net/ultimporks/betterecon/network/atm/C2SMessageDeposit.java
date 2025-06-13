@@ -1,4 +1,4 @@
-package net.ultimporks.betterecon.network;
+package net.ultimporks.betterecon.network.atm;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

@@ -1,40 +1,155 @@
-package net.ultimporks.betterecon;
+package net.ultimporks.betterecon.currency;
 
-import java.util.Locale;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.ultimporks.betterecon.configs.ModConfigs;
 
-public class CurrencyTypes {
+import java.util.List;
+import java.util.Map;
 
+public class Currency {
+    private final String name;
+    private final String symbol;
 
-    
-    public enum CurrencyType {
-        COINS("Coins", "textures/gui/coins.png"),
-        GEMS("Gems", "textures/gui/gems.png"),
-        TOKENS("Tokens", "textures/gui/tokens.png"),
-        DOLLARS("Dollars", "textures/gui/dollars.png"),
-        CUSTOM("Custom", "");
+    public Currency(String name, String symbol) {
+        this.name = name;
+        this.symbol = symbol;
+    }
 
-        private final String displayName;
-        private final String iconPath;
+    public String getName() {
+        return ModConfigs.COMMON.currencyName.get();
+    }
 
-        CurrencyType(String displayName, String iconPath) {
-            this.displayName = displayName;
-            this.iconPath = iconPath;
-        }
+    public String getSymbol() {
+        return ModConfigs.COMMON.currencySymbol.get();
+    }
 
-        public String getDisplayName() {
-            return displayName;
-        }
+    public static void giveCurrencyItems(Player player, Item currencyItem, int count) {
+        if (count <= 0) return;
 
-        public String getIconPath() {
-            return iconPath;
-        }
+        ItemStack exampleStack = new ItemStack(currencyItem);
+        int maxStack = currencyItem.getMaxStackSize(exampleStack);
 
-        public static CurrencyType fromString(String name) {
-            try {
-                return CurrencyType.valueOf(name.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException e) {
-                return CurrencyType.CUSTOM;
+        while (count > 0) {
+            int toGive = Math.min(count, maxStack);
+            ItemStack stack = new ItemStack(currencyItem, toGive);
+
+            boolean added = player.getInventory().add(stack);
+            if (!added) {
+                player.drop(stack, false);
             }
+
+            count -= toGive;
         }
     }
+
+    public static void giveCurrency(Player player, int amount, Map<Item, Integer> denominations) {
+        if (amount <= 0) return;
+
+        // Sort denominations descending by value
+        List<Map.Entry<Item, Integer>> sorted = denominations.entrySet().stream()
+                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                .toList();
+
+        for (Map.Entry<Item, Integer> entry : sorted) {
+            Item currencyItem = entry.getKey();
+            int value = entry.getValue();
+
+            int count = amount / value;
+            if (count > 0) {
+                giveCurrencyItems(player, currencyItem, count);
+                amount -= count * value;
+            }
+
+            if (amount == 0) break;
+        }
+    }
+
+    public static int removeCurrency(Player player, Map<Item, Integer> denominations, int amountToRemove) {
+        int totalRemoved = 0;
+        int remaining = amountToRemove;
+
+        // Sort denominations by descending value
+        List<Map.Entry<Item, Integer>> sorted = denominations.entrySet().stream()
+                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                .toList();
+
+        for (Map.Entry<Item, Integer> entry : sorted) {
+            Item currencyItem = entry.getKey();
+            int valuePerItem = entry.getValue();
+
+            for (int i = 0; i < player.getInventory().items.size(); i++) {
+                if (remaining <= 0) break;
+
+                ItemStack stack = player.getInventory().items.get(i);
+                if (!stack.isEmpty() && stack.getItem() == currencyItem) {
+                    int stackCount = stack.getCount();
+                    int stackValue = stackCount * valuePerItem;
+                    int needed = remaining;
+
+                    if (stackValue <= needed) {
+                        player.getInventory().setItem(i, ItemStack.EMPTY);
+                        totalRemoved += stackValue;
+                        remaining -= stackValue;
+                    } else {
+                        int itemsToRemove = Math.min(stackCount, (int) Math.ceil((double) needed / valuePerItem));
+                        stack.shrink(itemsToRemove);
+                        int removedValue = itemsToRemove * valuePerItem;
+                        totalRemoved += removedValue;
+                        remaining -= removedValue;
+                    }
+                }
+            }
+        }
+
+        return totalRemoved;
+    }
+
+    public static void makeChange(Player player, Map<Item, Integer> denominations, int changeAmount) {
+        if (changeAmount <= 0) return;
+
+        // Sort denominations in descending order by value
+        List<Map.Entry<Item, Integer>> sorted = denominations.entrySet().stream()
+                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                .toList();
+
+        for (Map.Entry<Item, Integer> entry : sorted) {
+            Item currencyItem = entry.getKey();
+            int value = entry.getValue();
+
+            int count = changeAmount / value;
+            if (count > 0) {
+                Currency.giveCurrencyItems(player, currencyItem, count);
+                changeAmount -= count * value;
+            }
+
+            if (changeAmount == 0) break;
+        }
+
+        if (changeAmount > 0) {
+            // This shouldn't happen if denominations are complete, but warn just in case.
+            player.sendSystemMessage(Component.literal("Unable to return full change " + changeAmount));
+        }
+    }
+
+    public static int getCashAmount(Player player, Map<Item, Integer> denominations) {
+        int total = 0;
+
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.isEmpty()) continue;
+
+            Item item = stack.getItem();
+            Integer value = denominations.get(item);
+
+            if (value != null) {
+                total += stack.getCount() * value;
+            }
+        }
+
+        return total;
+    }
+
+
 }
