@@ -30,6 +30,8 @@ public class ClientPayloadHandler {
         ClientData.setItemForSale(data.itemForSale());
         // Set the amount of stock for the shop
         ClientData.setShopStock(data.stock());
+        // Is the owner viewing as a customer?
+        ClientData.setCustomerView(data.customerView());
     }
 
 

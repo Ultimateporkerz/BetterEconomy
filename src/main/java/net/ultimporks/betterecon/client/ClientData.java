@@ -25,6 +25,7 @@ public class ClientData {
 
     // Player Shop Helpers
     private static int sellPrice = 0;
+    private static boolean customerView = false;
     // Itemstack used for Customers
     private static ItemStack itemForSale = ItemStack.EMPTY;
     private static int shopStock = 0;
@@ -33,15 +34,20 @@ public class ClientData {
     public static void setSellPrice(int price) {
         sellPrice = price;
     }
-
     public static int getSellPrice() {
         return sellPrice;
+    }
+
+    public static void setCustomerView(boolean customerView1) {
+        customerView = customerView1;
+    }
+    public static boolean getCustomerView() {
+        return customerView;
     }
 
     public static void setItemForSale(ItemStack itemForSale1) {
         itemForSale = itemForSale1;
     }
-
     public static ItemStack getItemForSale() {
         return itemForSale;
     }
@@ -49,7 +55,6 @@ public class ClientData {
     public static void setShopStock(int amount) {
         shopStock = amount;
     }
-
     public static int getShopStock() {
         return shopStock;
     }
@@ -58,7 +63,6 @@ public class ClientData {
         currencySymbol = currencySymbol1;
 
     }
-
     public static String getCurrencySymbol() {
         return currencySymbol;
     }

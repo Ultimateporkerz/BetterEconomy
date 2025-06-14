@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.ultimporks.betterecon.Reference;
 
-public record S2CMessageItemAndPrice(ItemStack itemForSale, int price, int stock) implements CustomPacketPayload {
+public record S2CMessageItemAndPrice(ItemStack itemForSale, int price, int stock, boolean customerView) implements CustomPacketPayload {
     public static final Type<S2CMessageItemAndPrice> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_item_and_price"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageItemAndPrice> STREAM_CODEC =
@@ -16,6 +16,7 @@ public record S2CMessageItemAndPrice(ItemStack itemForSale, int price, int stock
                     ItemStack.STREAM_CODEC, S2CMessageItemAndPrice::itemForSale,
                     ByteBufCodecs.VAR_INT, S2CMessageItemAndPrice::price,
                     ByteBufCodecs.VAR_INT, S2CMessageItemAndPrice::stock,
+                    ByteBufCodecs.BOOL, S2CMessageItemAndPrice::customerView,
                     S2CMessageItemAndPrice::new
             );
 

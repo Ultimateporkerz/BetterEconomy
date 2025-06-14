@@ -1,6 +1,7 @@
 package net.ultimporks.betterecon.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -24,6 +25,8 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
 
     private int sellingPrice;
     private int totalPrice;
+
+    private boolean customerView;
 
     private int totalStock;
     private int quantity = 0;
@@ -77,6 +80,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         this.sellingPrice = ClientData.getSellPrice();
         this.totalStock = ClientData.getShopStock();
         this.currencySymbol = ClientData.getCurrencySymbol();
+        this.customerView = ClientData.getCustomerView();
         // Middle of the Screen X and Y
         int xPosMiddle = (this.width - this.imageWidth) / 2;
         int yPosMiddle = (this.height - this.imageHeight) / 2;
@@ -302,7 +306,13 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         // Confirm
         if (isMouseOver((int) mouseX, (int) mouseY, confirmButtonLeft, confirmButtonTop, CONFIRM_BUTTON_WIDTH, CONFIRM_BUTTON_HEIGHT)) {
             if (quantity != 0) {
-                PacketDistributor.sendToServer(new C2SMessagePurchase(itemForSale, totalPrice, quantity, shopBlockPos));
+                if (!customerView) {
+                    PacketDistributor.sendToServer(new C2SMessagePurchase(itemForSale, totalPrice, quantity, shopBlockPos));
+                    return true;
+                } else {
+                    minecraft.player.sendSystemMessage(Component.literal("You cannot buy from your own Shop!").withStyle(ChatFormatting.RED));
+                    return false;
+                }
             }
             return true;
         }

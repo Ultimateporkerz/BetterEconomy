@@ -14,9 +14,9 @@ public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Reference.MOD_ID);
 
-    public static final Supplier<CreativeModeTab> RESPAWN_TOKEN_TAB = CREATIVE_MODE_TABS.register("respawn_token",
+    public static final Supplier<CreativeModeTab> BETTER_ECONOMY_TAB = CREATIVE_MODE_TABS.register("better_economy",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.ONE_DOLLAR_BILL.get()))
-                    .title(Component.translatable("creativetab.resptoken_tab"))
+                    .title(Component.translatable("creativetab.betterecon_tab"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.ATM.get());
                         output.accept(ModBlocks.SHOP.get());

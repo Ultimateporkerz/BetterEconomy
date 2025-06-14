@@ -25,6 +25,7 @@ import net.ultimporks.betterecon.configs.ModConfigs;
 import net.ultimporks.betterecon.init.ModBlockEntities;
 import net.ultimporks.betterecon.init.ModItems;
 import net.ultimporks.betterecon.network.S2CMessageCurrencySymbol;
+import net.ultimporks.betterecon.network.shop.S2CMessageItemAndPrice;
 import net.ultimporks.betterecon.util.menu.ShopCustomerMenu;
 import net.ultimporks.betterecon.util.menu.ShopOwnerMenu;
 import org.jetbrains.annotations.Nullable;
@@ -247,9 +248,6 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-
-
-
     @Override
     public Component getDisplayName() {
         return Component.literal("Shop");
@@ -257,19 +255,31 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        boolean isOwner = player.getUUID().equals(this.ownerUUID);
         String currencySymbol = ModConfigs.COMMON.currencySymbol.get();
         PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageCurrencySymbol(currencySymbol));
 
+        boolean isOwner = player.getUUID().equals(this.ownerUUID);
+        boolean canOpenMenu = slotHasItem() || hasEnoughStock(1);
+
         if (isOwner) {
-            return new ShopOwnerMenu(i, inventory, this, this.data);
-        } else {
-            // Send packet to client to update them with the price, and item for sale
-            if (!slotHasItem() || !hasEnoughStock(1)) {
-                player.sendSystemMessage(Component.literal("Shop is closed! Please come back soon!").withStyle(ChatFormatting.RED));
-                return null;
+            if (!player.isCrouching()) {
+                return new ShopOwnerMenu(i, inventory, this, this.data);
+            } else {
+                if (canOpenMenu) {
+                    PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), true));
+                    return new ShopCustomerMenu(i, inventory, this);
+                } else {
+                    player.sendSystemMessage(Component.literal("You must finish setting up your shop!").withStyle(ChatFormatting.YELLOW));
+                }
             }
-            return new ShopCustomerMenu(i, inventory, this);
+        } else {
+            if (canOpenMenu) {
+                PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), false));
+                return new ShopCustomerMenu(i, inventory, this);
+            } else {
+                player.sendSystemMessage(Component.literal("Shop is Closed! Please try again later!").withStyle(ChatFormatting.RED));
+            }
         }
+        return null;
     }
 }
