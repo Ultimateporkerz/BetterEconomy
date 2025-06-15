@@ -20,6 +20,8 @@ public class ModConfigs {
         public final ModConfigSpec.IntValue startingAmount;
         public final ModConfigSpec.ConfigValue<String> currencyName;
         public final ModConfigSpec.ConfigValue<String> currencySymbol;
+        // General Settings
+        public final ModConfigSpec.BooleanValue sendGaveCurrencyMessage;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.comment("Debugging").push("Development");
@@ -43,6 +45,14 @@ public class ModConfigs {
             currencySymbol = builder
                     .comment("What should the Currency symbol be?")
                     .define("currencySymbol","$");
+
+            builder.pop();
+
+            builder.comment("General Settings").push("General");
+
+            sendGaveCurrencyMessage = builder
+                    .comment("Should the player be told that currency was added to their account upon joining for the first time?")
+                    .define("currencyMessage", true);
 
             builder.pop();
         }

@@ -76,6 +76,7 @@ public class ShopBlock extends Block implements EntityBlock {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof ShopBlockEntity shopBlock) {
                 shopBlock.setOwner(player.getUUID());
+                shopBlock.setOwnerName(player.getName().getString());
             }
         }
         super.setPlacedBy(level, pos, state, placer, stack);

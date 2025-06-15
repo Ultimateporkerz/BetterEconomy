@@ -35,7 +35,9 @@ public class ModEventHandlers {
             Balance balance = player.getData(ModAttachmentTypes.BALANCE.get());
             balance.setBalance(startingBalance);
             BetterEconomy.LOGGING("Giving " + player.getName().getString() + " their government assistance of " + currencySymbol + startingBalance);
-            player.sendSystemMessage(Component.literal(currencySymbol + startingBalance + " has been added to your 'Enderman Bank' bank account!").withStyle(ChatFormatting.GREEN));
+            if (ModConfigs.COMMON.sendGaveCurrencyMessage.get()) {
+                player.sendSystemMessage(Component.literal(currencySymbol + startingBalance + " has been added to your 'Enderman Bank' bank account!").withStyle(ChatFormatting.GREEN));
+            }
         } else {
             BetterEconomy.LOGGING("Player is known, skipping Government Assistance");
         }

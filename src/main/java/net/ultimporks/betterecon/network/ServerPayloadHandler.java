@@ -118,8 +118,6 @@ public class ServerPayloadHandler {
             int price = data.price();
             int quantity = data.amountPurchased();
 
-            BetterEconomy.LOGGING("Purchasing " + itemForSale.getDisplayName().getString() + " (" + quantity + ") price: " + price);
-
             Map<Item, Integer> denominations = Map.of(
                     ModItems.ONE_HUNDRED_DOLLAR_BILL.get(), 100,
                     ModItems.FIFTY_DOLLAR_BILL.get(), 50,
@@ -129,41 +127,45 @@ public class ServerPayloadHandler {
                     ModItems.ONE_DOLLAR_BILL.get(), 1
             );
 
-            // Make sure player can even afford it
-            int cash = Currency.getCashAmount(player, denominations);
+            if (level.getBlockEntity(shopBlockPos) instanceof ShopBlockEntity shopBlock) {
+                BetterEconomy.LOGGING("Purchasing " + itemForSale.getDisplayName().getString() + " (" + quantity + ") price: " + price);
 
-            if (cash >= price) {
+                // Make sure player can even afford it
+                int cash = Currency.getCashAmount(player, denominations);
+
+                if (cash < price) {
+                    player.sendSystemMessage(Component.literal("Not enough cash to purchase " + itemForSale.getDisplayName().getString()).withStyle(ChatFormatting.RED));
+                    return;
+                }
+
+                if (!shopBlock.transferCashToShop(price, denominations)) {
+                    String shopOwnerName = shopBlock.getOwnerName();
+                    player.sendSystemMessage(Component.literal(shopOwnerName + " needs to empty the register! Shop cannot hold anymore cash - transaction failed").withStyle(ChatFormatting.RED));
+                    return;
+                }
+
+                shopBlock.removePurchasedItems(quantity);
+
                 // Pay
                 int removed = Currency.removeCurrency(player, denominations, price);
-
                 // Give change if needed
                 int change = removed - price;
                 if (change > 0) {
                     Currency.makeChange(player, denominations, change);
                 }
 
-                if (level.getBlockEntity(shopBlockPos) instanceof ShopBlockEntity shopBlock) {
-                    ItemStack soldItem = itemForSale.copy();
-                    soldItem.setCount(quantity);
+                ItemStack soldItem = itemForSale.copy();
+                soldItem.setCount(quantity);
 
-                    boolean added = player.getInventory().add(soldItem);
-                    if (!added) {
-                        player.drop(soldItem, false);
-                    }
-
-                    shopBlock.removePurchasedItems(quantity);
-                    shopBlock.transferCashToShop(price);
-
-                    player.sendSystemMessage(Component.literal("Purchased " + itemForSale.getDisplayName().getString() + " for " + currencySymbol + price).withStyle(ChatFormatting.GREEN));
-                } else {
-                    BetterEconomy.LOGGING("(ServerPayloadHandler) - INVALID SHOP! (WRONG BLOCK POS SENT IN PACKET??)");
+                boolean added = player.getInventory().add(soldItem);
+                if (!added) {
+                    player.drop(soldItem, false);
                 }
+                player.sendSystemMessage(Component.literal("Purchased " + itemForSale.getDisplayName().getString() + " for " + currencySymbol + price).withStyle(ChatFormatting.GREEN));
             } else {
-                player.sendSystemMessage(Component.literal("Not enough cash to purchase " + itemForSale.getDisplayName().getString()).withStyle(ChatFormatting.RED));
+                BetterEconomy.LOGGING("(ServerPayloadHandler) - INVALID SHOP! (WRONG BLOCK POS SENT IN PACKET??)");
             }
-
             player.closeContainer();
         });
     }
-
 }

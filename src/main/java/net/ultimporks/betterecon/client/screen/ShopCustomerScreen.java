@@ -306,7 +306,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         // Confirm
         if (isMouseOver((int) mouseX, (int) mouseY, confirmButtonLeft, confirmButtonTop, CONFIRM_BUTTON_WIDTH, CONFIRM_BUTTON_HEIGHT)) {
             if (quantity != 0) {
-                if (!customerView) {
+                if (customerView) {
                     PacketDistributor.sendToServer(new C2SMessagePurchase(itemForSale, totalPrice, quantity, shopBlockPos));
                     return true;
                 } else {
@@ -326,6 +326,10 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
 
         if (quantity < 0) {
             quantity = 0;
+        }
+
+        if (quantity > totalStock) {
+            quantity = totalStock;
         }
 
         totalPrice = quantity * sellingPrice;

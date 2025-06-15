@@ -31,6 +31,7 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
         pPoseStack.translate(0.5f, 0.80f, 0.5f);
         // Scale
         pPoseStack.scale(0.80f, 0.80f, 0.80f);
+        pPoseStack.mulPose(Axis.YP.rotation(360));
         pPoseStack.mulPose(Axis.XP.rotationDegrees(270));
 
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, getLightLevel(pBlockEntity.getLevel(), pBlockEntity.getBlockPos()),

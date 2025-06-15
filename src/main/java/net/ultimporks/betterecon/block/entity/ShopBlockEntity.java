@@ -30,6 +30,8 @@ import net.ultimporks.betterecon.util.menu.ShopCustomerMenu;
 import net.ultimporks.betterecon.util.menu.ShopOwnerMenu;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ShopBlockEntity extends BlockEntity implements MenuProvider {
@@ -39,9 +41,11 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     private ItemStack itemsForSale = ItemStack.EMPTY;
     private int price = 0;
 
+    private int tickCounter = 0;
     protected final ContainerData data;
 
     private UUID ownerUUID;
+    private String ownerName;
 
     public ShopBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.SHOP_BLOCK_BE.get(), pos, blockState);
@@ -70,9 +74,14 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         tag.put("ItemForSale", itemForSale.serializeNBT(registries));
         tag.put("registerInventory", registerHandler.serializeNBT(registries));
         tag.putInt("Price", price);
+        tag.putInt("TickCounter", tickCounter);
 
         if (ownerUUID != null) {
             tag.putUUID("Owner", ownerUUID);
+        }
+
+        if (ownerName != null) {
+            tag.putString("OwnerName", ownerName);
         }
     }
 
@@ -83,19 +92,28 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         itemForSale.deserializeNBT(registries, tag.getCompound("ItemForSale"));
         registerHandler.deserializeNBT(registries, tag.getCompound("registerInventory"));
         price = tag.getInt("Price");
+        tickCounter = tag.getInt("TickCounter");
 
         if (tag.hasUUID("Owner")) {
             ownerUUID = tag.getUUID("Owner");
         } else {
             ownerUUID = null;
         }
+
+        if (tag.contains("OwnerName", CompoundTag.TAG_STRING)) {
+            ownerName = tag.getString("OwnerName");
+        } else {
+            ownerName = null;
+        }
     }
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
+
         if (slotHasItem() && !getItemForSale().equals(getItemInSlot())) {
             setItemForSale(getItemInSlot());
         }
     }
+
 
     private boolean slotHasItem() {
         return !this.itemForSale.getStackInSlot(0).isEmpty();
@@ -125,59 +143,79 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         }
         return total;
     }
-    public boolean hasEnoughStock(int amountRequested) {
-        int totalAvailable = 0;
 
-        for (int i = 0; i < stockHandler.getSlots(); i++) {
-            totalAvailable += stockHandler.getStackInSlot(i).getCount();
-            if (totalAvailable >= amountRequested) {
-                return true;
-            }
+    public boolean transferCashToShop(int amountEarned, Map<Item, Integer> denominations) {
+        // SIMULATION PHASE
+        int simulatedRemaining = amountEarned;
+        ItemStackHandler copyHandler = new ItemStackHandler(registerHandler.getSlots());
+        for (int i = 0; i < registerHandler.getSlots(); i++) {
+            copyHandler.setStackInSlot(i, registerHandler.getStackInSlot(i).copy());
         }
-        return false;
-    }
 
-    public void transferCashToShop(int amountEarned) {
-        int remaining = amountEarned;
+        List<Map.Entry<Item, Integer>> sortedDenoms = denominations.entrySet().stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .toList();
 
-        int[] denominations = {100, 50, 20, 10, 5, 1};
-        Item[] bills = {
-                ModItems.ONE_HUNDRED_DOLLAR_BILL.get(),
-                ModItems.FIFTY_DOLLAR_BILL.get(),
-                ModItems.TWENTY_DOLLAR_BILL.get(),
-                ModItems.TEN_DOLLAR_BILL.get(),
-                ModItems.FIVE_DOLLAR_BILL.get(),
-                ModItems.ONE_DOLLAR_BILL.get()
-        };
+        for (Map.Entry<Item, Integer> entry : sortedDenoms) {
+            int value = entry.getValue();
+            Item item = entry.getKey();
 
-        for (int denomIndex = 0; denomIndex < denominations.length && remaining > 0; denomIndex++) {
-            int billValue = denominations[denomIndex];
-            int count = remaining / billValue;
-
+            int count = simulatedRemaining / value;
             if (count <= 0) continue;
 
-            ItemStack stack = new ItemStack(bills[denomIndex], count);
+            ItemStack billStack = new ItemStack(item, count);
 
-            // Insert into registerHandler first
-            ItemStack leftover = registerHandler.insertItem(denomIndex, stack, false);
-            int insertedCount = count - leftover.getCount();
-            remaining -= insertedCount * billValue;
-
-            // Try stockHandler if there is leftover
-            if (!leftover.isEmpty() && remaining > 0) {
-                ItemStack leftoverFromStock = stockHandler.insertItem(denomIndex, leftover, false);
-                int insertedToStock = leftover.getCount() - leftoverFromStock.getCount();
-                remaining -= insertedToStock * billValue;
+            // Fill existing partial stacks first
+            for (int slot = 0; slot < copyHandler.getSlots() && billStack.getCount() > 0; slot++) {
+                ItemStack existing = copyHandler.getStackInSlot(slot);
+                if (!existing.isEmpty() && ItemStack.isSameItemSameComponents(existing, billStack)) {
+                    billStack = copyHandler.insertItem(slot, billStack, true);
+                }
             }
+
+            // Then try any remaining slots
+            for (int slot = 0; slot < copyHandler.getSlots() && billStack.getCount() > 0; slot++) {
+                billStack = copyHandler.insertItem(slot, billStack, true);
+            }
+
+            int inserted = count - billStack.getCount();
+            simulatedRemaining -= inserted * value;
+
+            if (inserted == 0) return false; // No room for this denomination
         }
 
-        if (remaining > 0) {
-            // Could not store full amount - log or handle this
-            BetterEconomy.LOGGING("Shop inventory full! Could not store $" + remaining);
+        if (simulatedRemaining > 0) return false;
+
+        // INSERTION PHASE
+        int remaining = amountEarned;
+        for (Map.Entry<Item, Integer> entry : sortedDenoms) {
+            int value = entry.getValue();
+            Item item = entry.getKey();
+
+            int count = remaining / value;
+            if (count <= 0) continue;
+
+            ItemStack billStack = new ItemStack(item, count);
+
+            // Fill existing stacks first
+            for (int slot = 0; slot < registerHandler.getSlots() && billStack.getCount() > 0; slot++) {
+                ItemStack existing = registerHandler.getStackInSlot(slot);
+                if (!existing.isEmpty() && ItemStack.isSameItemSameComponents(existing, billStack)) {
+                    billStack = registerHandler.insertItem(slot, billStack, false);
+                }
+            }
+
+            // Insert into empty/valid slots
+            for (int slot = 0; slot < registerHandler.getSlots() && billStack.getCount() > 0; slot++) {
+                billStack = registerHandler.insertItem(slot, billStack, false);
+            }
+
+            int inserted = count - billStack.getCount();
+            remaining -= inserted * value;
         }
+
+        return true;
     }
-
-
 
     // Price
     public int getPrice() {
@@ -198,6 +236,15 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     public boolean isOwner(UUID currentPlayerUUID) {
         return currentPlayerUUID.equals(ownerUUID);
     }
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+        this.setChanged();
+        BetterEconomy.LOGGING("Shop Owners Name: " + ownerName);
+    }
+    public String getOwnerName() {
+        return ownerName;
+    }
+
 
     public ItemStack getRenderStack() {
         if (!itemForSale.getStackInSlot(0).isEmpty()) {
@@ -234,7 +281,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public void drops() {
-        int totalSlots = stockHandler.getSlots() + itemForSale.getSlots();
+        int totalSlots = stockHandler.getSlots() + itemForSale.getSlots() + registerHandler.getSlots();
         SimpleContainer inventory = new SimpleContainer(totalSlots);
 
         for (int i = 0; i < stockHandler.getSlots(); i++) {
@@ -243,6 +290,10 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
 
         for (int i = 0; i < itemForSale.getSlots(); i++) {
             inventory.setItem(stockHandler.getSlots() + i, itemForSale.getStackInSlot(i));
+        }
+
+        for (int i = 0; i < registerHandler.getSlots(); i++) {
+            inventory.setItem(stockHandler.getSlots() + itemForSale.getSlots() + i, registerHandler.getStackInSlot(i));
         }
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
@@ -259,7 +310,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageCurrencySymbol(currencySymbol));
 
         boolean isOwner = player.getUUID().equals(this.ownerUUID);
-        boolean canOpenMenu = slotHasItem() || hasEnoughStock(1);
+        boolean canOpenMenu = slotHasItem();
 
         if (isOwner) {
             if (!player.isCrouching()) {
