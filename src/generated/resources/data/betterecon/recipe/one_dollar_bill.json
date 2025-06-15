@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "betterecon:five_dollar_bill"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "id": "betterecon:one_dollar_bill"
+  }
+}

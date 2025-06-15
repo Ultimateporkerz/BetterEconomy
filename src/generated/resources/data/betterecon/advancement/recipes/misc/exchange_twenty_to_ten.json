@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "betterecon:exchange_twenty_to_ten"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_twenty_dollar_bill": {
+      "conditions": {
+        "items": [
+          {
+            "items": "betterecon:twenty_dollar_bill"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_twenty_dollar_bill"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "betterecon:exchange_twenty_to_ten"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "betterecon:block/shop",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "betterecon:block/shop"
+    },
+    "facing=south": {
+      "model": "betterecon:block/shop",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "betterecon:block/shop",
+      "y": 270
+    }
+  }
+}

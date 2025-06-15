@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fifty_dollar_bill": {
+      "conditions": {
+        "items": [
+          {
+            "items": "betterecon:fifty_dollar_bill"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "betterecon:exchange_fifty_to_ten"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fifty_dollar_bill"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "betterecon:exchange_fifty_to_ten"
+    ]
+  }
+}
