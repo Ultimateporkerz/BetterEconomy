@@ -4,7 +4,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.ultimporks.betterecon.BetterEconomy;
 import net.ultimporks.betterecon.configs.ModConfigs;
+import net.ultimporks.betterecon.item.DebitCardItem;
 
 import java.util.List;
 import java.util.Map;
@@ -151,5 +153,14 @@ public class Currency {
         return total;
     }
 
+    public static boolean isDebitCardInInventory(Player player) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof DebitCardItem) {
+                BetterEconomy.LOGGING("Debit Card was found in " + player.getName().getString() + "'s inventory!");
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

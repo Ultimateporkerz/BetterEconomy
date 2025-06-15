@@ -7,8 +7,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.ultimporks.betterecon.init.ModDataComponents;
+import net.ultimporks.betterecon.init.ModItems;
 import net.ultimporks.betterecon.init.ModMenuTypes;
 import net.ultimporks.betterecon.item.WalletItem;
 import net.ultimporks.betterecon.util.WalletSavedData;
@@ -20,7 +22,7 @@ public class WalletMenu extends AbstractContainerMenu {
     private final ItemStack walletStack;
     private final WalletSavedData walletComponent;
     private final SimpleContainer walletInventory;
-
+    private final int walletSlotIndex;
 
     public WalletMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
         this(containerId, playerInventory, playerInventory.player.getItemInHand(
@@ -31,6 +33,15 @@ public class WalletMenu extends AbstractContainerMenu {
     public WalletMenu(int containerId, Inventory playerInventory, ItemStack walletItem) {
         super(ModMenuTypes.WALLET_MENU.get(), containerId);
         this.walletStack = walletItem;
+
+        int index = -1;
+        for (int i = 0; i < playerInventory.items.size(); i++) {
+            if (playerInventory.getItem(i) == walletItem) {
+                index = i;
+                break;
+            }
+        }
+        this.walletSlotIndex = index;
 
         this.walletComponent = walletItem.getComponents().get(ModDataComponents.WALLET_INVENTORY.get());
 
@@ -53,7 +64,8 @@ public class WalletMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(walletInventory, i, 35 + i * 18, 19) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
-                    return (!(stack.getItem() instanceof WalletItem));
+                    Item item = stack.getItem();
+                    return isAllowedInWallet(item) && !(item instanceof WalletItem);
                 }
             });
         }
@@ -77,23 +89,61 @@ public class WalletMenu extends AbstractContainerMenu {
         walletStack.set(ModDataComponents.WALLET_INVENTORY.get(), new WalletSavedData(savedItems));
     }
 
-
     @Override
     public boolean stillValid(Player player) {
         return true;
     }
 
+    private boolean isAllowedInWallet(Item item) {
+        return item == ModItems.ONE_DOLLAR_BILL.get()
+                || item == ModItems.FIVE_DOLLAR_BILL.get()
+                || item == ModItems.TEN_DOLLAR_BILL.get()
+                || item == ModItems.TWENTY_DOLLAR_BILL.get()
+                || item == ModItems.FIFTY_DOLLAR_BILL.get()
+                || item == ModItems.ONE_HUNDRED_DOLLAR_BILL.get()
+                || item == ModItems.DEBIT_CARD.get();
+    }
+
+
     private void addPlayerInventory(Inventory playerInventory) {
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 45 + row * 18));
+                int slotIndex = col + row * 9 + 9;
+                Slot slot = new Slot(playerInventory, slotIndex, 8 + col * 18, 45 + row * 18) {
+                    @Override
+                    public boolean mayPickup(Player player) {
+                        // Prevent picking up the wallet item slot
+                        if (slotIndex == walletSlotIndex) return false;
+                        return super.mayPickup(player);
+                    }
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        // Prevent placing anything in the wallet item slot
+                        if (slotIndex == walletSlotIndex) return false;
+                        return super.mayPlace(stack);
+                    }
+                };
+                this.addSlot(slot);
             }
         }
     }
 
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 103));
+            int slotIndex = i;
+            Slot slot = new Slot(playerInventory, slotIndex, 8 + i * 18, 103) {
+                @Override
+                public boolean mayPickup(Player player) {
+                    if (slotIndex == walletSlotIndex) return false;
+                    return super.mayPickup(player);
+                }
+                @Override
+                public boolean mayPlace(ItemStack stack) {
+                    if (slotIndex == walletSlotIndex) return false;
+                    return super.mayPlace(stack);
+                }
+            };
+            this.addSlot(slot);
         }
     }
 

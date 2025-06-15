@@ -6,6 +6,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.ultimporks.betterecon.Reference;
 import net.ultimporks.betterecon.item.CurrencyItem;
+import net.ultimporks.betterecon.item.DebitCardItem;
 import net.ultimporks.betterecon.item.WalletItem;
 
 public class ModItems {
@@ -39,6 +40,10 @@ public class ModItems {
 
     public static final DeferredItem<Item> WALLET = ITEMS.register("wallet",
             () -> new WalletItem(new Item.Properties()
+                    .stacksTo(1)));
+
+    public static final DeferredItem<Item> DEBIT_CARD = ITEMS.register("debit_card",
+            () -> new DebitCardItem(new Item.Properties()
                     .stacksTo(1)));
 
 

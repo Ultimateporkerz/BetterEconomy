@@ -317,7 +317,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
                 return new ShopOwnerMenu(i, inventory, this, this.data);
             } else {
                 if (canOpenMenu) {
-                    PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), true));
+                    PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), true, getOwnerName()));
                     return new ShopCustomerMenu(i, inventory, this);
                 } else {
                     player.sendSystemMessage(Component.literal("You must finish setting up your shop!").withStyle(ChatFormatting.YELLOW));
@@ -325,7 +325,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
             }
         } else {
             if (canOpenMenu) {
-                PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), false));
+                PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), false, getOwnerName()));
                 return new ShopCustomerMenu(i, inventory, this);
             } else {
                 player.sendSystemMessage(Component.literal("Shop is Closed! Please try again later!").withStyle(ChatFormatting.RED));

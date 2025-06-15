@@ -15,6 +15,7 @@ import net.ultimporks.betterecon.client.screen.ShopOwnerScreen;
 import net.ultimporks.betterecon.client.screen.WalletScreen;
 import net.ultimporks.betterecon.configs.ModConfigs;
 import net.ultimporks.betterecon.init.*;
+import net.ultimporks.betterecon.loot.ModLootModifiers;
 import net.ultimporks.betterecon.network.NetworkHandler;
 import net.ultimporks.betterecon.client.screen.ATMScreen;
 import org.apache.logging.log4j.LogManager;
@@ -34,6 +35,7 @@ public class BetterEconomy {
         ModCreativeTabs.registerCreativeTab(modEventBus);
         ModDataComponents.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModLootModifiers.register(modEventBus);
 
         modEventBus.addListener(NetworkHandler::register);
     }

@@ -55,6 +55,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('L', Items.LEATHER)
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
                 .save(recipeOutput);
+        // Debit Card
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DEBIT_CARD.get())
+                .pattern("IGI")
+                .pattern("PAP")
+                .pattern("GPG")
+                .define('I', Items.IRON_NUGGET)
+                .define('G', Items.GOLD_NUGGET)
+                .define('P', Items.PAPER)
+                .define('A', Items.AMETHYST_SHARD)
+                .unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD))
+                .save(recipeOutput);
+
         // ATM
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ATM.get())
                 .pattern("MEM")

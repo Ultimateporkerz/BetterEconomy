@@ -60,7 +60,6 @@ public class ServerPayloadHandler {
             player.sendSystemMessage(Component.literal("Deposited " + currencySymbol + amountToDeposit + "!").withStyle(ChatFormatting.GREEN));
         });
     }
-
     public static void handleWithdrawMessage(final C2SMessageWithdraw data, final IPayloadContext context) {
         int amountToRemove = data.amount();
         Player player = context.player();
@@ -88,8 +87,6 @@ public class ServerPayloadHandler {
         player.closeContainer();
         player.sendSystemMessage(Component.literal("Withdrew " + currencySymbol + data.amount() + " from your account!").withStyle(ChatFormatting.GREEN));
     }
-
-
     public static void handleSaveSellPrice(final C2SMessageSaveSellPrice data, final IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
@@ -110,7 +107,6 @@ public class ServerPayloadHandler {
     // Player Shop methods
     public static void handlePurchaseMessage(final C2SMessagePurchase data, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            String currencySymbol = ModConfigs.COMMON.currencySymbol.get();
             Player player = context.player();
             Level level = player.level();
             BlockPos shopBlockPos = data.shopBlockPos();
@@ -130,42 +126,107 @@ public class ServerPayloadHandler {
             if (level.getBlockEntity(shopBlockPos) instanceof ShopBlockEntity shopBlock) {
                 BetterEconomy.LOGGING("Purchasing " + itemForSale.getDisplayName().getString() + " (" + quantity + ") price: " + price);
 
-                // Make sure player can even afford it
+                // Handle Cash Purchase if the player has enough Cash
                 int cash = Currency.getCashAmount(player, denominations);
 
-                if (cash < price) {
-                    player.sendSystemMessage(Component.literal("Not enough cash to purchase " + itemForSale.getDisplayName().getString()).withStyle(ChatFormatting.RED));
+                if (cash >= price) {
+                    handleCashPurchase(player, price, quantity, itemForSale, shopBlock, denominations);
+                    player.closeContainer();
+                    BetterEconomy.LOGGING("Player purchased items with Cash");
                     return;
                 }
 
-                if (!shopBlock.transferCashToShop(price, denominations)) {
-                    String shopOwnerName = shopBlock.getOwnerName();
-                    player.sendSystemMessage(Component.literal(shopOwnerName + " needs to empty the register! Shop cannot hold anymore cash - transaction failed").withStyle(ChatFormatting.RED));
+                // Handle Debit Card purchase if the player failed the cash check
+                Balance bankAccount = player.getData(ModAttachmentTypes.BALANCE.get());
+                int balance = bankAccount.getBalance();
+
+                if (Currency.isDebitCardInInventory(player) && balance >= price) {
+                    handleDebitCardPurchase(player, price, quantity, itemForSale, shopBlock, bankAccount, denominations);
+                    player.closeContainer();
+                    BetterEconomy.LOGGING("Player purchased items with their Debit Card");
                     return;
                 }
 
-                shopBlock.removePurchasedItems(quantity);
-
-                // Pay
-                int removed = Currency.removeCurrency(player, denominations, price);
-                // Give change if needed
-                int change = removed - price;
-                if (change > 0) {
-                    Currency.makeChange(player, denominations, change);
-                }
-
-                ItemStack soldItem = itemForSale.copy();
-                soldItem.setCount(quantity);
-
-                boolean added = player.getInventory().add(soldItem);
-                if (!added) {
-                    player.drop(soldItem, false);
-                }
-                player.sendSystemMessage(Component.literal("Purchased " + itemForSale.getDisplayName().getString() + " for " + currencySymbol + price).withStyle(ChatFormatting.GREEN));
-            } else {
-                BetterEconomy.LOGGING("(ServerPayloadHandler) - INVALID SHOP! (WRONG BLOCK POS SENT IN PACKET??)");
+                String currencyName = ModConfigs.COMMON.currencyName.get();
+                player.sendSystemMessage(Component.literal("You do not have enough " + currencyName + " to buy " + itemForSale.getDisplayName().getString()));
+                player.closeContainer();
             }
-            player.closeContainer();
         });
     }
+
+
+    // Class Helpers
+    private static void handleCashPurchase(Player player, int price, int quantity, ItemStack itemForSale, BlockEntity shopBlockEntity, Map<Item, Integer> denominations) {
+        if (shopBlockEntity instanceof ShopBlockEntity shopBlock) {
+            // Register is Full
+            if (!shopBlock.transferCashToShop(price, denominations)) {
+                String shopOwnerName = shopBlock.getOwnerName();
+                player.sendSystemMessage(Component.literal(shopOwnerName + " needs to empty the register! Shop cannot hold anymore cash - transaction failed").withStyle(ChatFormatting.RED));
+                player.closeContainer();
+                return;
+            }
+
+            shopBlock.removePurchasedItems(quantity);
+
+            // Pay
+            int removed = Currency.removeCurrency(player, denominations, price);
+            // Give change if needed
+            int change = removed - price;
+            if (change > 0) {
+                Currency.makeChange(player, denominations, change);
+            }
+
+            ItemStack soldItem = itemForSale.copy();
+            soldItem.setCount(quantity);
+
+            boolean added = player.getInventory().add(soldItem);
+            if (!added) {
+                player.drop(soldItem, false);
+            }
+            String currencySymbol = ModConfigs.COMMON.currencySymbol.get();
+            player.sendSystemMessage(Component.literal("Purchased " + itemForSale.getDisplayName().getString() + " for " + currencySymbol + price).withStyle(ChatFormatting.GREEN));
+            player.closeContainer();
+        } else {
+            BetterEconomy.LOGGING("(ServerPayloadHandler) - INVALID SHOP! (WRONG BLOCK POS SENT IN PACKET??)");
+            player.closeContainer();
+        }
+    }
+    private static void handleDebitCardPurchase(Player player, int price, int quantity, ItemStack itemForSale, BlockEntity shopBlockEntity, Balance balance, Map<Item, Integer> denominations) {
+        if (shopBlockEntity instanceof ShopBlockEntity shopBlock) {
+            // Register is Fill
+            if (!shopBlock.transferCashToShop(price, denominations)) {
+                String shopOwnerName = shopBlock.getOwnerName();
+                player.sendSystemMessage(Component.literal(shopOwnerName + " needs to empty the register! Shop cannot hold anymore cash - transaction failed").withStyle(ChatFormatting.RED));
+                player.closeContainer();
+                return;
+            }
+
+            shopBlock.removePurchasedItems(quantity);
+
+            // Pay for Item
+            balance.subtractBalance(price);
+
+            ItemStack soldItem = itemForSale.copy();
+            soldItem.setCount(quantity);
+
+            boolean added = player.getInventory().add(soldItem);
+            if (!added) {
+                player.drop(soldItem, false);
+            }
+            String currencySymbol = ModConfigs.COMMON.currencySymbol.get();
+            int updatedBalance = balance.getBalance();
+            player.sendSystemMessage(Component.literal("Purchased " + itemForSale.getDisplayName().getString() + " for " + currencySymbol + price + " Account Balance is now " + currencySymbol + updatedBalance).withStyle(ChatFormatting.GREEN));
+            player.closeContainer();
+        } else {
+            BetterEconomy.LOGGING("(ServerPayloadHandler) - INVALID SHOP! (WRONG BLOCK POS SENT IN PACKET??)");
+            player.closeContainer();
+        }
+
+
+
+
+
+
+    }
+
 }

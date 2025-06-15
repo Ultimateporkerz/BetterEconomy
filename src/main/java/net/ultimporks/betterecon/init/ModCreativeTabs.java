@@ -21,6 +21,7 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.ATM.get());
                         output.accept(ModBlocks.SHOP.get());
                         output.accept(ModItems.WALLET.get());
+                        output.accept(ModItems.DEBIT_CARD.get());
                         output.accept(ModItems.ONE_DOLLAR_BILL.get());
                         output.accept(ModItems.FIVE_DOLLAR_BILL.get());
                         output.accept(ModItems.TEN_DOLLAR_BILL.get());

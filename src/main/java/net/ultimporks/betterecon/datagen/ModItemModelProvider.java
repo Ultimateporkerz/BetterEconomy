@@ -20,5 +20,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.FIFTY_DOLLAR_BILL.get());
         basicItem(ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
         basicItem(ModItems.WALLET.get());
+        basicItem(ModItems.DEBIT_CARD.get());
     }
 }

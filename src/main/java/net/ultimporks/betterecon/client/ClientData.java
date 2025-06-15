@@ -26,6 +26,7 @@ public class ClientData {
     // Player Shop Helpers
     private static int sellPrice = 0;
     private static boolean customerView = false;
+    private static String ownerName = "NULL";
     // Itemstack used for Customers
     private static ItemStack itemForSale = ItemStack.EMPTY;
     private static int shopStock = 0;
@@ -66,5 +67,13 @@ public class ClientData {
     public static String getCurrencySymbol() {
         return currencySymbol;
     }
+
+    public static void setOwnerName(String ownersName) {
+        ownerName = ownersName;
+    }
+    public static String getOwnerName() {
+        return ownerName;
+    }
+
 
 }

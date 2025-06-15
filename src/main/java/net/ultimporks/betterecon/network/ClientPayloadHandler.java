@@ -32,6 +32,8 @@ public class ClientPayloadHandler {
         ClientData.setShopStock(data.stock());
         // Is the owner viewing as a customer?
         ClientData.setCustomerView(data.customerView());
+        // Set the Owners Name
+        ClientData.setOwnerName(data.ownerName());
     }
 
 

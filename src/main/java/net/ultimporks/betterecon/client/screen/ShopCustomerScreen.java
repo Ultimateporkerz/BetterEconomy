@@ -2,6 +2,7 @@ package net.ultimporks.betterecon.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -27,6 +28,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
     private int totalPrice;
 
     private boolean customerView;
+    private String ownerName;
 
     private int totalStock;
     private int quantity = 0;
@@ -62,7 +64,8 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
             negativeFiftyButtonLeft, negativeFiftyButtonTop,
             oneHundredButtonLeft, oneHundredButtonTop,
             negativeOneHundredButtonLeft, negativeOneHundredButtonTop,
-            confirmButtonLeft, confirmButtonTop;
+            confirmButtonLeft, confirmButtonTop,
+            ownerNameLeft, ownerNameTop;
 
 
 
@@ -81,6 +84,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         this.totalStock = ClientData.getShopStock();
         this.currencySymbol = ClientData.getCurrencySymbol();
         this.customerView = ClientData.getCustomerView();
+        this.ownerName = ClientData.getOwnerName();
         // Middle of the Screen X and Y
         int xPosMiddle = (this.width - this.imageWidth) / 2;
         int yPosMiddle = (this.height - this.imageHeight) / 2;
@@ -122,6 +126,9 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         // Amount in Cart
         this.amountInCartLeft = costTextLeft;
         this.amountInCartTop = costTextTop - 10;
+        // Owner Name
+        this.ownerNameLeft = xPosMiddle;
+        this.ownerNameTop = yPosMiddle - 8;
     }
 
     @Override
@@ -136,6 +143,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         renderOneHundredButton(pGuiGraphics, mouseX, mouseY);
         renderQty(pGuiGraphics);
         renderCheckoutButton(pGuiGraphics, mouseX, mouseY);
+        renderOwnerName(pGuiGraphics);
     }
 
     @Override
@@ -190,6 +198,27 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
 
         pGuiGraphics.drawString(minecraft.font, amountSelected, adjustedX, amountInCartTop, 0xFFFFFFFF, false);
     }
+
+    private void renderOwnerName(GuiGraphics guiGraphics) {
+        String nameString = ownerName + "'s Shop";
+        Component nameComponent = Component.literal(ownerName + "'s Shop")
+                .withStyle(style -> style.withBold(true));
+        float labelScale = 0.80f;
+
+        int textWidth = Minecraft.getInstance().font.width(nameString);
+
+        float x = ownerNameLeft + (imageWidth / 2.0f) - (textWidth * labelScale / 2.0f);
+        float y = ownerNameTop;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().scale(labelScale, labelScale, labelScale);
+
+        guiGraphics.drawString(Minecraft.getInstance().font, nameComponent, (int)(x / labelScale), (int)(y / labelScale), 0xFFFFFF
+        );
+        guiGraphics.pose().popPose();
+    }
+
+
 
     private void renderOneButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         boolean oneHovered = isMouseOver(mouseX, mouseY, oneButtonLeft, oneButtonTop, ONE_BUTTON_WIDTH, ONE_BUTTON_HEIGHT);
@@ -306,11 +335,12 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         // Confirm
         if (isMouseOver((int) mouseX, (int) mouseY, confirmButtonLeft, confirmButtonTop, CONFIRM_BUTTON_WIDTH, CONFIRM_BUTTON_HEIGHT)) {
             if (quantity != 0) {
-                if (customerView) {
+                if (!customerView) {
                     PacketDistributor.sendToServer(new C2SMessagePurchase(itemForSale, totalPrice, quantity, shopBlockPos));
                     return true;
                 } else {
                     minecraft.player.sendSystemMessage(Component.literal("You cannot buy from your own Shop!").withStyle(ChatFormatting.RED));
+                    minecraft.player.closeContainer();
                     return false;
                 }
             }
@@ -319,7 +349,6 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
 
         return super.mouseClicked(mouseX, mouseY, button);
     }
-
 
     private void adjustQuantity(int amount) {
         quantity += amount;
