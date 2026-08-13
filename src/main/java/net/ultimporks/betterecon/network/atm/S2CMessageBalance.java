@@ -1,23 +1,33 @@
 package net.ultimporks.betterecon.network.atm;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.ultimporks.betterecon.Reference;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+import net.ultimporks.betterecon.network.ClientPayloadHandler;
 
-public record S2CMessageBalance(int balance, String playerName) implements CustomPacketPayload {
-    public static final Type<S2CMessageBalance> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_balance"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<ByteBuf, S2CMessageBalance> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, S2CMessageBalance::balance,
-            ByteBufCodecs.STRING_UTF8, S2CMessageBalance::playerName,
-            S2CMessageBalance::new
-    );
+public class S2CMessageBalance {
+    public final int balance;
+    public final String playerName;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public S2CMessageBalance(int balance, String playerName) {
+        this.balance = balance;
+        this.playerName = playerName;
+    }
+
+    public S2CMessageBalance(FriendlyByteBuf buf) {
+        this.balance = buf.readInt();
+        this.playerName = buf.readUtf();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(balance);
+        buf.writeUtf(playerName);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ClientPayloadHandler.handleBalanceMessage(this);
+        });
     }
 }

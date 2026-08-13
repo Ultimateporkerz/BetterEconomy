@@ -8,17 +8,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.ultimporks.betterecon.BetterEconomy;
 import net.ultimporks.betterecon.Reference;
 import net.ultimporks.betterecon.client.ClientData;
-import net.ultimporks.betterecon.network.shop.C2SMessagePurchase;
+import net.ultimporks.betterecon.network.ModMessages;
 import net.ultimporks.betterecon.network.shop.C2SMessageSaveSellPrice;
 import net.ultimporks.betterecon.util.menu.ShopOwnerMenu;
 
 public class ShopOwnerScreen extends AbstractContainerScreen<ShopOwnerMenu> {
-    private static final ResourceLocation OWNER_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "textures/gui/shop_owner.png");
+    private static final ResourceLocation OWNER_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/shop_owner.png");
 
     private String currencySymbol;
     private int sellingPrice;
@@ -104,6 +102,7 @@ public class ShopOwnerScreen extends AbstractContainerScreen<ShopOwnerMenu> {
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(pGuiGraphics);
         super.render(pGuiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(pGuiGraphics, mouseX, mouseY);
         renderInfoHover(pGuiGraphics, mouseX, mouseY);
@@ -185,7 +184,7 @@ public class ShopOwnerScreen extends AbstractContainerScreen<ShopOwnerMenu> {
         int yPos = shopBlockPos.getY();
         int zPos = shopBlockPos.getZ();
         BetterEconomy.LOGGING("Clicked confirm" + shopBlockPos);
-        PacketDistributor.sendToServer(new C2SMessageSaveSellPrice(sellingPrice, xPos, yPos, zPos));
+        ModMessages.sendToServer(new C2SMessageSaveSellPrice(sellingPrice, xPos, yPos, zPos));
     }
 
     private void renderInfoHover(GuiGraphics guiGraphics, int mouseX, int mouseY) {

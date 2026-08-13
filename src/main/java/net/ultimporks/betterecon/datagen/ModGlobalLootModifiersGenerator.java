@@ -1,699 +1,228 @@
 package net.ultimporks.betterecon.datagen;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
-import net.neoforged.neoforge.common.loot.LootTableIdCondition;
+import net.minecraftforge.common.data.GlobalLootModifierProvider;
+import net.minecraftforge.common.loot.LootTableIdCondition;
 import net.ultimporks.betterecon.Reference;
 import net.ultimporks.betterecon.init.ModItems;
 import net.ultimporks.betterecon.loot.AddItemModifier;
 
-import java.util.concurrent.CompletableFuture;
-
 public class ModGlobalLootModifiersGenerator extends GlobalLootModifierProvider {
-    public ModGlobalLootModifiersGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registires) {
-        super(output, registires, Reference.MOD_ID);
+    public ModGlobalLootModifiersGenerator(PackOutput output) {
+        super(output, Reference.MOD_ID);
     }
 
     @Override
     protected void start() {
 
-        // Woodland Mansion ****
+        // Woodland Mansion - Bills
+        addBillLoot("woodland_mansion_one", "chests/woodland_mansion", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("woodland_mansion_five", "chests/woodland_mansion", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("woodland_mansion_ten", "chests/woodland_mansion", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("woodland_mansion_twenty", "chests/woodland_mansion", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("woodland_mansion_fifty", "chests/woodland_mansion", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("woodland_mansion_hundred", "chests/woodland_mansion", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_woodland_mansion", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft", "chests/woodland_mansion")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_woodland_mansion", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/woodland_mansion")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_woodland_mansion", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/woodland_mansion")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_woodland_mansion", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/woodland_mansion")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_woodland_mansion", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/woodland_mansion")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_woodland_mansion", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/woodland_mansion")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // End City Treasure - Bills
+        addBillLoot("end_city_treasure_one", "chests/end_city_treasure", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("end_city_treasure_five", "chests/end_city_treasure", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("end_city_treasure_ten", "chests/end_city_treasure", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("end_city_treasure_twenty", "chests/end_city_treasure", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("end_city_treasure_fifty", "chests/end_city_treasure", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("end_city_treasure_hundred", "chests/end_city_treasure", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // End City Treasure ****
+        // Abandoned Mineshaft - Bills
+        addBillLoot("abandoned_mineshaft_one", "chests/abandoned_mineshaft", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("abandoned_mineshaft_five", "chests/abandoned_mineshaft", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("abandoned_mineshaft_ten", "chests/abandoned_mineshaft", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("abandoned_mineshaft_twenty", "chests/abandoned_mineshaft", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("abandoned_mineshaft_fifty", "chests/abandoned_mineshaft", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("abandoned_mineshaft_hundred", "chests/abandoned_mineshaft", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_end_city_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/end_city_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_end_city_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/end_city_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_end_city_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/end_city_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_end_city_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/end_city_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_end_city_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/end_city_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_end_city_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/end_city_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Ancient City - Bills
+        addBillLoot("ancient_city_one", "chests/ancient_city", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("ancient_city_five", "chests/ancient_city", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("ancient_city_ten", "chests/ancient_city", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("ancient_city_twenty", "chests/ancient_city", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("ancient_city_fifty", "chests/ancient_city", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("ancient_city_hundred", "chests/ancient_city", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Abandoned Mineshaft ****
+        // Bastion Bridge - Bills
+        addBillLoot("bastion_bridge_one", "chests/bastion_bridge", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("bastion_bridge_five", "chests/bastion_bridge", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("bastion_bridge_ten", "chests/bastion_bridge", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("bastion_bridge_twenty", "chests/bastion_bridge", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_bridge_fifty", "chests/bastion_bridge", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_bridge_hundred", "chests/bastion_bridge", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_abandoned_mineshaft", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/abandoned_mineshaft")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_abandoned_mineshaft", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/abandoned_mineshaft")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_abandoned_mineshaft", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/abandoned_mineshaft")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_abandoned_mineshaft", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/abandoned_mineshaft")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_abandoned_mineshaft", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/abandoned_mineshaft")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_abandoned_mineshaft", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/abandoned_mineshaft")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Bastion Hoglin Stable - Bills
+        addBillLoot("bastion_hoglin_stable_one", "chests/bastion_hoglin_stable", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("bastion_hoglin_stable_five", "chests/bastion_hoglin_stable", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("bastion_hoglin_stable_ten", "chests/bastion_hoglin_stable", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("bastion_hoglin_stable_twenty", "chests/bastion_hoglin_stable", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_hoglin_stable_fifty", "chests/bastion_hoglin_stable", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_hoglin_stable_hundred", "chests/bastion_hoglin_stable", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Ancient City ****
+        // Bastion Other - Bills
+        addBillLoot("bastion_other_one", "chests/bastion_other", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("bastion_other_five", "chests/bastion_other", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("bastion_other_ten", "chests/bastion_other", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("bastion_other_twenty", "chests/bastion_other", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_other_fifty", "chests/bastion_other", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_other_hundred", "chests/bastion_other", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_ancient_city", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ancient_city")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_ancient_city", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ancient_city")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_ancient_city", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ancient_city")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_ancient_city", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ancient_city")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_ancient_city", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ancient_city")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_ancient_city", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ancient_city")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Bastion Treasure - Bills
+        addBillLoot("bastion_treasure_one", "chests/bastion_treasure", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("bastion_treasure_five", "chests/bastion_treasure", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("bastion_treasure_ten", "chests/bastion_treasure", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("bastion_treasure_twenty", "chests/bastion_treasure", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_treasure_fifty", "chests/bastion_treasure", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("bastion_treasure_hundred", "chests/bastion_treasure", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Bastion Bridge ****
+        // Buried Treasure - Bills
+        addBillLoot("buried_treasure_one", "chests/buried_treasure", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("buried_treasure_five", "chests/buried_treasure", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("buried_treasure_ten", "chests/buried_treasure", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("buried_treasure_twenty", "chests/buried_treasure", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("buried_treasure_fifty", "chests/buried_treasure", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("buried_treasure_hundred", "chests/buried_treasure", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_bastion_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_bastion_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_bastion_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_bastion_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_bastion_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_bastion_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Igloo Chest - Bills
+        addBillLoot("igloo_chest_one", "chests/igloo_chest", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("igloo_chest_five", "chests/igloo_chest", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("igloo_chest_ten", "chests/igloo_chest", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("igloo_chest_twenty", "chests/igloo_chest", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("igloo_chest_fifty", "chests/igloo_chest", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("igloo_chest_hundred", "chests/igloo_chest", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Bastion Hoglin Stable ****
+        // Desert Pyramid - Bills
+        addBillLoot("desert_pyramid_one", "chests/desert_pyramid", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("desert_pyramid_five", "chests/desert_pyramid", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("desert_pyramid_ten", "chests/desert_pyramid", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("desert_pyramid_twenty", "chests/desert_pyramid", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("desert_pyramid_fifty", "chests/desert_pyramid", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("desert_pyramid_hundred", "chests/desert_pyramid", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_bastion_hoglin_stable", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_hoglin_stable")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_bastion_hoglin_stable", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_hoglin_stable")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_bastion_hoglin_stable", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_hoglin_stable")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_bastion_hoglin_stable", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_hoglin_stable")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_bastion_hoglin_stable", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_hoglin_stable")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_bastion_hoglin_stable", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_hoglin_stable")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Jungle Temple - Bills
+        addBillLoot("jungle_temple_one", "chests/jungle_temple", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("jungle_temple_five", "chests/jungle_temple", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("jungle_temple_ten", "chests/jungle_temple", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("jungle_temple_twenty", "chests/jungle_temple", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("jungle_temple_fifty", "chests/jungle_temple", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("jungle_temple_hundred", "chests/jungle_temple", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Bastion Other ****
+        // Nether Bridge - Bills
+        addBillLoot("nether_bridge_one", "chests/nether_bridge", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("nether_bridge_five", "chests/nether_bridge", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("nether_bridge_ten", "chests/nether_bridge", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("nether_bridge_twenty", "chests/nether_bridge", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("nether_bridge_fifty", "chests/nether_bridge", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("nether_bridge_hundred", "chests/nether_bridge", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_bastion_other", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_other")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_bastion_other", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_other")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_bastion_other", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_other")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_bastion_other", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_other")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_bastion_other", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_other")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_bastion_other", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_other")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Pillager Outpost - Bills
+        addBillLoot("pillager_outpost_one", "chests/pillager_outpost", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("pillager_outpost_five", "chests/pillager_outpost", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("pillager_outpost_ten", "chests/pillager_outpost", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("pillager_outpost_twenty", "chests/pillager_outpost", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("pillager_outpost_fifty", "chests/pillager_outpost", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("pillager_outpost_hundred", "chests/pillager_outpost", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Bastion Treasure ****
+        // Ruined Portal - Bills
+        addBillLoot("ruined_portal_one", "chests/ruined_portal", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("ruined_portal_five", "chests/ruined_portal", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("ruined_portal_ten", "chests/ruined_portal", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("ruined_portal_twenty", "chests/ruined_portal", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("ruined_portal_fifty", "chests/ruined_portal", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("ruined_portal_hundred", "chests/ruined_portal", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_bastion_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_bastion_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_bastion_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_bastion_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_bastion_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_bastion_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/bastion_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Shipwreck Treasure - Bills
+        addBillLoot("shipwreck_treasure_one", "chests/shipwreck_treasure", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_treasure_five", "chests/shipwreck_treasure", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_treasure_ten", "chests/shipwreck_treasure", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_treasure_twenty", "chests/shipwreck_treasure", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_treasure_fifty", "chests/shipwreck_treasure", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_treasure_hundred", "chests/shipwreck_treasure", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Buried Treasure ****
+        // Shipwreck Supply - Bills
+        addBillLoot("shipwreck_supply_one", "chests/shipwreck_supply", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_supply_five", "chests/shipwreck_supply", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_supply_ten", "chests/shipwreck_supply", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_supply_twenty", "chests/shipwreck_supply", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_supply_fifty", "chests/shipwreck_supply", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("shipwreck_supply_hundred", "chests/shipwreck_supply", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_buried_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/buried_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_buried_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/buried_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_buried_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/buried_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_buried_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/buried_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_buried_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/buried_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_buried_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/buried_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Spawn Bonus Chest - Bills
+        addBillLoot("spawn_bonus_chest_one", "chests/spawn_bonus_chest", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("spawn_bonus_chest_five", "chests/spawn_bonus_chest", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("spawn_bonus_chest_ten", "chests/spawn_bonus_chest", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("spawn_bonus_chest_twenty", "chests/spawn_bonus_chest", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("spawn_bonus_chest_fifty", "chests/spawn_bonus_chest", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("spawn_bonus_chest_hundred", "chests/spawn_bonus_chest", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Igloo Chest ****
+        // Simple Dungeon - Bills
+        addBillLoot("simple_dungeon_one", "chests/simple_dungeon", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("simple_dungeon_five", "chests/simple_dungeon", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("simple_dungeon_ten", "chests/simple_dungeon", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("simple_dungeon_twenty", "chests/simple_dungeon", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("simple_dungeon_fifty", "chests/simple_dungeon", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("simple_dungeon_hundred", "chests/simple_dungeon", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_igloo_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/igloo_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_igloo_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/igloo_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_igloo_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/igloo_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_igloo_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/igloo_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_igloo_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/igloo_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_igloo_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/igloo_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Stronghold Corridor - Bills
+        addBillLoot("stronghold_corridor_one", "chests/stronghold_corridor", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("stronghold_corridor_five", "chests/stronghold_corridor", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("stronghold_corridor_ten", "chests/stronghold_corridor", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("stronghold_corridor_twenty", "chests/stronghold_corridor", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("stronghold_corridor_fifty", "chests/stronghold_corridor", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("stronghold_corridor_hundred", "chests/stronghold_corridor", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Desert Pyramid ****
+        // Stronghold Crossing - Bills
+        addBillLoot("stronghold_crossing_one", "chests/stronghold_crossing", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("stronghold_crossing_five", "chests/stronghold_crossing", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("stronghold_crossing_ten", "chests/stronghold_crossing", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("stronghold_crossing_twenty", "chests/stronghold_crossing", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("stronghold_crossing_fifty", "chests/stronghold_crossing", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("stronghold_crossing_hundred", "chests/stronghold_crossing", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_desert_pyramid", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/desert_pyramid")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_desert_pyramid", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/desert_pyramid")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_desert_pyramid", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/desert_pyramid")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_desert_pyramid", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/desert_pyramid")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_desert_pyramid", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/desert_pyramid")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_desert_pyramid", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/desert_pyramid")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Stronghold Library - Bills
+        addBillLoot("stronghold_library_one", "chests/stronghold_library", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("stronghold_library_five", "chests/stronghold_library", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("stronghold_library_ten", "chests/stronghold_library", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("stronghold_library_twenty", "chests/stronghold_library", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("stronghold_library_fifty", "chests/stronghold_library", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("stronghold_library_hundred", "chests/stronghold_library", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Jungle Temple ****
+        // Underwater Ruin Big - Bills
+        addBillLoot("underwater_ruin_big_one", "chests/underwater_ruin_big", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_big_five", "chests/underwater_ruin_big", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_big_ten", "chests/underwater_ruin_big", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_big_twenty", "chests/underwater_ruin_big", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_big_fifty", "chests/underwater_ruin_big", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_big_hundred", "chests/underwater_ruin_big", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // One
-        add("respawn_token_jungle_temple", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/jungle_temple")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_jungle_temple", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/jungle_temple")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_jungle_temple", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/jungle_temple")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_jungle_temple", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/jungle_temple")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_jungle_temple", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/jungle_temple")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_jungle_temple", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/jungle_temple")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+        // Underwater Ruin Small - Bills
+        addBillLoot("underwater_ruin_small_one", "chests/underwater_ruin_small", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_small_five", "chests/underwater_ruin_small", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_small_ten", "chests/underwater_ruin_small", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_small_twenty", "chests/underwater_ruin_small", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_small_fifty", "chests/underwater_ruin_small", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("underwater_ruin_small_hundred", "chests/underwater_ruin_small", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
 
-        // Nether Bridge ****
+        // Village Toolsmith - Bills
+        addBillLoot("village_toolsmith_one", "chests/village/village_toolsmith", 0.15f, ModItems.ONE_DOLLAR_BILL.get());
+        addBillLoot("village_toolsmith_five", "chests/village/village_toolsmith", 0.10f, ModItems.FIVE_DOLLAR_BILL.get());
+        addBillLoot("village_toolsmith_ten", "chests/village/village_toolsmith", 0.07f, ModItems.TEN_DOLLAR_BILL.get());
+        addBillLoot("village_toolsmith_twenty", "chests/village/village_toolsmith", 0.05f, ModItems.TWENTY_DOLLAR_BILL.get());
+        addBillLoot("village_toolsmith_fifty", "chests/village/village_toolsmith", 0.03f, ModItems.FIFTY_DOLLAR_BILL.get());
+        addBillLoot("village_toolsmith_hundred", "chests/village/village_toolsmith", 0.01f, ModItems.ONE_HUNDRED_DOLLAR_BILL.get());
+    }
 
-        // One
-        add("respawn_token_nether_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/nether_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_nether_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/nether_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_nether_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/nether_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_nether_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/nether_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_nether_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/nether_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_nether_bridge", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/nether_bridge")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Pillager Outpost ****
-
-        // One
-        add("respawn_token_pillager_outpost", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/pillager_outpost")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_pillager_outpost", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/pillager_outpost")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_pillager_outpost", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/pillager_outpost")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_pillager_outpost", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/pillager_outpost")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_pillager_outpost", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/pillager_outpost")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_pillager_outpost", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/pillager_outpost")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Ruined Portal ****
-
-        // One
-        add("respawn_token_ruined_portal", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ruined_portal")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_ruined_portal", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ruined_portal")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_ruined_portal", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ruined_portal")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_ruined_portal", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ruined_portal")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_ruined_portal", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ruined_portal")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_ruined_portal", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/ruined_portal")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Shipwreck Treasure ****
-
-        // One
-        add("respawn_token_shipwreck_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_shipwreck_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_shipwreck_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_shipwreck_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_shipwreck_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_shipwreck_treasure", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_treasure")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Shipwreck Supply ****
-
-        // One
-        add("respawn_token_shipwreck_supply", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_supply")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_shipwreck_supply", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_supply")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_shipwreck_supply", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_supply")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_shipwreck_supply", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_supply")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_shipwreck_supply", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_supply")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_shipwreck_supply", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/shipwreck_supply")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Spawn bonus chest ****
-
-        // One
-        add("respawn_token_spawn_bonus_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/spawn_bonus_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_spawn_bonus_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/spawn_bonus_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_spawn_bonus_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/spawn_bonus_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_spawn_bonus_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/spawn_bonus_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_spawn_bonus_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/spawn_bonus_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_spawn_bonus_chest", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/spawn_bonus_chest")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Simple Dungeon ****
-
-        // One
-        add("respawn_token_simple_dungeon", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/simple_dungeon")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_simple_dungeon", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/simple_dungeon")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_simple_dungeon", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/simple_dungeon")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_simple_dungeon", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/simple_dungeon")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_simple_dungeon", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/simple_dungeon")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_simple_dungeon", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/simple_dungeon")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Stronghold Corridor ****
-
-        // One
-        add("respawn_token_stronghold_corridor", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_corridor")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_stronghold_corridor", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_corridor")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_stronghold_corridor", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_corridor")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_stronghold_corridor", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_corridor")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_stronghold_corridor", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_corridor")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_stronghold_corridor", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_corridor")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Stronghold Crossing ****
-
-        // One
-        add("respawn_token_stronghold_crossing", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_crossing")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_stronghold_crossing", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_crossing")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_stronghold_crossing", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_crossing")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_stronghold_crossing", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_crossing")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_stronghold_crossing", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_crossing")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_stronghold_crossing", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_crossing")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Stronghold Library ****
-
-        // One
-        add("respawn_token_stronghold_library", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_library")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_stronghold_library", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_library")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_stronghold_library", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_library")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_stronghold_library", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_library")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_stronghold_library", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_library")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_stronghold_library", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/stronghold_library")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Underwater Ruin Big ****
-
-        // One
-        add("respawn_token_underwater_ruin_big", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_big")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_underwater_ruin_big", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_big")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_underwater_ruin_big", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_big")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_underwater_ruin_big", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_big")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_underwater_ruin_big", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_big")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_underwater_ruin_big", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_big")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Underwater Ruin Small ****
-
-        // One
-        add("respawn_token_underwater_ruin_small", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_small")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_underwater_ruin_small", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_small")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_underwater_ruin_small", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_small")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_underwater_ruin_small", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_small")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_underwater_ruin_small", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_small")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_underwater_ruin_small", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/underwater_ruin_small")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
-
-        // Village Tool Smith ****
-
-        // One
-        add("respawn_token_village_toolsmith", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/village/village_toolsmith")).build(),
-                LootItemRandomChanceCondition.randomChance(0.15f).build()}, ModItems.ONE_DOLLAR_BILL.get()));
-        // Five
-        add("token_part_village_toolsmith", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/village/village_toolsmith")).build(),
-                LootItemRandomChanceCondition.randomChance(0.10f).build()}, ModItems.FIVE_DOLLAR_BILL.get()));
-        // Ten
-        add("token_part_village_toolsmith", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/village/village_toolsmith")).build(),
-                LootItemRandomChanceCondition.randomChance(0.07f).build()}, ModItems.TEN_DOLLAR_BILL.get()));
-        // Twenty
-        add("token_part_village_toolsmith", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/village/village_toolsmith")).build(),
-                LootItemRandomChanceCondition.randomChance(0.05f).build()}, ModItems.TWENTY_DOLLAR_BILL.get()));
-        // Fifty
-        add("token_part_village_toolsmith", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/village/village_toolsmith")).build(),
-                LootItemRandomChanceCondition.randomChance(0.03f).build()}, ModItems.FIFTY_DOLLAR_BILL.get()));
-        // One Hundred
-        add("token_part_village_toolsmith", new AddItemModifier(new LootItemCondition[] {
-                new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft","chests/village/village_toolsmith")).build(),
-                LootItemRandomChanceCondition.randomChance(0.01f).build()}, ModItems.ONE_HUNDRED_DOLLAR_BILL.get()));
+    private void addBillLoot(String name, String lootTablePath, float chance, net.minecraft.world.item.Item item) {
+        add(name, new AddItemModifier(new LootItemCondition[] {
+                new LootTableIdCondition.Builder(new ResourceLocation("minecraft", lootTablePath)).build(),
+                LootItemRandomChanceCondition.randomChance(chance).build()
+        }, item));
     }
 }

@@ -1,28 +1,47 @@
 package net.ultimporks.betterecon.network.shop;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.ultimporks.betterecon.Reference;
+import net.minecraftforge.network.NetworkEvent;
+import net.ultimporks.betterecon.network.ServerPayloadHandler;
 
-public record C2SMessagePurchase(ItemStack purchasedItem, int price, int amountPurchased, BlockPos shopBlockPos) implements CustomPacketPayload {
-    public static final Type<C2SMessagePurchase> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_purchase"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessagePurchase> STREAM_CODEC =
-            StreamCodec.composite(
-                    ItemStack.STREAM_CODEC, C2SMessagePurchase::purchasedItem,
-                    ByteBufCodecs.VAR_INT, C2SMessagePurchase::price,
-                    ByteBufCodecs.VAR_INT, C2SMessagePurchase::amountPurchased,
-                    BlockPos.STREAM_CODEC, C2SMessagePurchase::shopBlockPos,
-                    C2SMessagePurchase::new
-    );
+public class C2SMessagePurchase {
+    public final ItemStack purchasedItem;
+    public final int price;
+    public final int amountPurchased;
+    public final int amountForSale;
+    public final BlockPos shopBlockPos;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public C2SMessagePurchase(ItemStack purchasedItem, int price, int amountPurchased, int amountForSale, BlockPos shopBlockPos) {
+        this.purchasedItem = purchasedItem;
+        this.price = price;
+        this.amountPurchased = amountPurchased;
+        this.amountForSale = amountForSale;
+        this.shopBlockPos = shopBlockPos;
+    }
+
+    public C2SMessagePurchase(FriendlyByteBuf buf) {
+        this.purchasedItem = buf.readItem();
+        this.price = buf.readInt();
+        this.amountPurchased = buf.readInt();
+        this.amountForSale = buf.readInt();
+        this.shopBlockPos = buf.readBlockPos();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeItem(purchasedItem);
+        buf.writeInt(price);
+        buf.writeInt(amountPurchased);
+        buf.writeInt(amountForSale);
+        buf.writeBlockPos(shopBlockPos);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ServerPayloadHandler.handlePurchaseMessage(this, context);
+        });
     }
 }

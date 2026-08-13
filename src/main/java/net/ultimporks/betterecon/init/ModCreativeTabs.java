@@ -4,8 +4,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 import net.ultimporks.betterecon.Reference;
 
 import java.util.function.Supplier;
@@ -20,6 +20,7 @@ public class ModCreativeTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.ATM.get());
                         output.accept(ModBlocks.SHOP.get());
+                        output.accept(ModBlocks.VAULT.get());
                         output.accept(ModItems.WALLET.get());
                         output.accept(ModItems.DEBIT_CARD.get());
                         output.accept(ModItems.ONE_DOLLAR_BILL.get());

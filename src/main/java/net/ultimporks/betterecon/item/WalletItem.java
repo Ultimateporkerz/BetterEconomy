@@ -1,6 +1,7 @@
 package net.ultimporks.betterecon.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
@@ -10,7 +11,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkHooks;
 import net.ultimporks.betterecon.util.menu.WalletMenu;
+import org.jetbrains.annotations.Nullable;
 
 public class WalletItem extends Item {
 
@@ -20,22 +23,22 @@ public class WalletItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        if (level.isClientSide) return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), true);
+
         ItemStack stack = player.getItemInHand(usedHand);
+        NetworkHooks.openScreen(
+                (ServerPlayer) player,
+                new MenuProvider() {
+                    @Override
+                    public Component getDisplayName() {
+                        return Component.literal("Wallet");
+                    }
 
-        if (level.isClientSide) return InteractionResultHolder.sidedSuccess(stack, true);
-
-        player.openMenu(new MenuProvider() {
-            @Override
-            public Component getDisplayName() {
-                return Component.translatable("container.wallet");
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-                return new WalletMenu(id, inv, stack);
-            }
-        }, buf -> buf.writeInt(usedHand.ordinal()));
-
+                    @Override
+                    public @Nullable AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+                        return new WalletMenu(pContainerId, pPlayerInventory, stack);
+                    }
+                },buf -> buf.writeInt(usedHand.ordinal()));
         return InteractionResultHolder.sidedSuccess(stack, false);
     }
 }

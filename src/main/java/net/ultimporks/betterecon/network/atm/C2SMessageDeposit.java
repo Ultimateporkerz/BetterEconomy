@@ -1,23 +1,29 @@
 package net.ultimporks.betterecon.network.atm;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.ultimporks.betterecon.Reference;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+import net.ultimporks.betterecon.network.ServerPayloadHandler;
 
-public record C2SMessageDeposit(int amount) implements CustomPacketPayload {
-    public static final Type<C2SMessageDeposit> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_deposit"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<ByteBuf, C2SMessageDeposit> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            C2SMessageDeposit::amount,
-            C2SMessageDeposit::new
-    );
+public class C2SMessageDeposit {
+    public final int amount;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public C2SMessageDeposit(int amount) {
+        this.amount = amount;
+    }
+
+    public C2SMessageDeposit(FriendlyByteBuf buf) {
+        this.amount = buf.readInt();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(amount);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ServerPayloadHandler.handleDepositMessage(this, context);
+        });
     }
 }

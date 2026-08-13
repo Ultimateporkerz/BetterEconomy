@@ -1,10 +1,10 @@
 package net.ultimporks.betterecon.configs;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ModConfigs {
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec COMMON_SPEC;
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec COMMON_SPEC;
 
     public static final Common COMMON;
 
@@ -15,15 +15,16 @@ public class ModConfigs {
 
     public static class Common {
         // Debugging
-        public final ModConfigSpec.BooleanValue enableDebugging;
+        public final ForgeConfigSpec.BooleanValue enableDebugging;
         // Currency Settings
-        public final ModConfigSpec.IntValue startingAmount;
-        public final ModConfigSpec.ConfigValue<String> currencyName;
-        public final ModConfigSpec.ConfigValue<String> currencySymbol;
+        public final ForgeConfigSpec.IntValue startingAmount;
+        public final ForgeConfigSpec.ConfigValue<String> currencyName;
+        public final ForgeConfigSpec.ConfigValue<String> currencySymbol;
         // General Settings
-        public final ModConfigSpec.BooleanValue sendGaveCurrencyMessage;
+        public final ForgeConfigSpec.BooleanValue sendGaveCurrencyMessage;
+        public final ForgeConfigSpec.BooleanValue resetGiveCurrency;
 
-        public Common(ModConfigSpec.Builder builder) {
+        public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Debugging").push("Development");
 
             enableDebugging = builder
@@ -53,6 +54,10 @@ public class ModConfigs {
             sendGaveCurrencyMessage = builder
                     .comment("Should the player be told that currency was added to their account upon joining for the first time?")
                     .define("currencyMessage", true);
+
+            resetGiveCurrency = builder
+                    .comment("Should the data on whether or not players have been given their first time check be reset on next server start? ( THIS WILL RESET ALL PLAYERS BANK ACCOUNTS )")
+                    .define("resetCurrencyMessage", false);
 
             builder.pop();
         }

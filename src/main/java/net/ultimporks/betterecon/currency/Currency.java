@@ -163,4 +163,11 @@ public class Currency {
         return false;
     }
 
+    public static ItemStack getDebitCard(Player player) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof DebitCardItem) return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
 }

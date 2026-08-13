@@ -1,23 +1,28 @@
 package net.ultimporks.betterecon.network;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.ultimporks.betterecon.Reference;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
-public record S2CMessageCurrencySymbol(String currencySymbol) implements CustomPacketPayload {
-    public static final Type<S2CMessageCurrencySymbol> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_currency_symbol"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageCurrencySymbol> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8, S2CMessageCurrencySymbol::currencySymbol,
-                    S2CMessageCurrencySymbol::new
-            );
+public class S2CMessageCurrencySymbol {
+    public final String currencySymbol;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public S2CMessageCurrencySymbol(String currencySymbol) {
+        this.currencySymbol = currencySymbol;
+    }
+
+    public S2CMessageCurrencySymbol(FriendlyByteBuf buf) {
+        this.currencySymbol = buf.readUtf();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeUtf(currencySymbol);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+           ClientPayloadHandler.handleCurrencySymbol(this);
+        });
     }
 }

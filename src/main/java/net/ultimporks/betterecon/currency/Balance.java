@@ -1,8 +1,8 @@
 package net.ultimporks.betterecon.currency;
 
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.ultimporks.betterecon.interfaces.IBalance;
 
 public class Balance implements IBalance, INBTSerializable<CompoundTag> {
@@ -32,15 +32,15 @@ public class Balance implements IBalance, INBTSerializable<CompoundTag> {
 
     // NBT serialization methods
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("Balance", balance);
+        tag.putInt("balance", balance);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.balance = nbt.getInt("Balance");
+    public void deserializeNBT(CompoundTag nbt) {
+        this.balance = nbt.getInt("balance");
     }
 
 }

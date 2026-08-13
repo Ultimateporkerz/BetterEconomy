@@ -1,23 +1,29 @@
 package net.ultimporks.betterecon.network.shop;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.ultimporks.betterecon.Reference;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+import net.ultimporks.betterecon.network.ClientPayloadHandler;
 
-public record S2CMessageSellPrice(int sellPrice) implements CustomPacketPayload {
-    public static final Type<S2CMessageSellPrice> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_sell_price"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<ByteBuf, S2CMessageSellPrice> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            S2CMessageSellPrice::sellPrice,
-            S2CMessageSellPrice::new
-    );
+public class S2CMessageSellPrice {
+    public final int sellPrice;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public S2CMessageSellPrice(int sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public S2CMessageSellPrice(FriendlyByteBuf buf) {
+        this.sellPrice = buf.readInt();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(sellPrice);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ClientPayloadHandler.handleSellPriceMessage(this);
+        });
     }
 }

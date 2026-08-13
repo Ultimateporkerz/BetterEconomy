@@ -1,6 +1,7 @@
 {
   "block.betterecon.atm": "ATM",
   "block.betterecon.shop": "Shop",
+  "block.betterecon.vault": "Vault",
 
   "item.betterecon.one_dollar_bill": "One Dollar",
   "item.betterecon.five_dollar_bill": "Five Dollars",
@@ -10,9 +11,17 @@
   "item.betterecon.one_hundred_dollar_bill": "One-Hundred Dollars",
   "item.betterecon.wallet": "Wallet",
   "item.betterecon.debit_card": "Debit Card",
+  "item.betterecon.debit_card.info": "Hold 'Shift' for info.",
+  "item.betterecon.debit_card.balance.info": "Right-Click to view account balance.",
+  "item.betterecon.debit_card.info.message": "Shops will prioritize Cash over Debit Cards.\nDebit Card must be in inventory to be used!",
 
   "container.banking": "Enderman Bank ATM",
   "creativetab.betterecon_tab": "EndermanBank - BetterEconomy",
   "container.wallet": "Wallet",
-  "shop.info": "Placing more than 1 will allow\nselling multiple per transaction.\nSet the price, and click confirm. That's it!\n(leave the item(s) in the slot!)"
+  "shop.info": "Placing more than 1 will allow\nselling multiple per transaction.\nSet the price, and click confirm. That's it!\n(leave the item(s) in the slot!)",
+
+  "entity.minecraft.villager.betterecon.banker": "Banker",
+  "enchantment.betterecon.cash_back": "Cashback",
+
+  "block.betterecon.vault.info": "Villager Workbench"
 }

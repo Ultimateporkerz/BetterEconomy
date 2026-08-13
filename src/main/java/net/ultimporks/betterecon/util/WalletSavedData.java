@@ -8,10 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 public class WalletSavedData {
-    private final List<ItemStack> items; // must be immutable
+    private final List<ItemStack> items;
 
     public WalletSavedData(List<ItemStack> items) {
-        // Defensive copy & immutability
         this.items = Collections.unmodifiableList(new ArrayList<>(items));
     }
 

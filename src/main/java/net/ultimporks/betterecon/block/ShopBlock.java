@@ -1,13 +1,18 @@
 package net.ultimporks.betterecon.block;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -22,10 +27,16 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.network.NetworkHooks;
 import net.ultimporks.betterecon.block.entity.ShopBlockEntity;
+import net.ultimporks.betterecon.configs.ModConfigs;
 import net.ultimporks.betterecon.init.ModBlockEntities;
+import net.ultimporks.betterecon.network.ModMessages;
+import net.ultimporks.betterecon.network.S2CMessageCurrencySymbol;
+import net.ultimporks.betterecon.network.shop.S2CMessageItemAndPrice;
 import net.ultimporks.betterecon.network.shop.S2CMessageSellPrice;
+import net.ultimporks.betterecon.util.menu.ShopCustomerMenu;
+import net.ultimporks.betterecon.util.menu.ShopOwnerMenu;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -52,11 +63,6 @@ public class ShopBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
     public BlockState rotate(BlockState pState, Rotation pRotation) {
         return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
     }
@@ -66,7 +72,7 @@ public class ShopBlock extends Block implements EntityBlock {
         return this.defaultBlockState().setValue(FACING, direction);
     }
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPES.getOrDefault(state.getValue(FACING), SHAPES.get(Direction.NORTH));
     }
 
@@ -123,16 +129,80 @@ public class ShopBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState pState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (level.isClientSide) return InteractionResult.sidedSuccess(true);
         BlockEntity entity = level.getBlockEntity(pos);
 
         if (entity instanceof ShopBlockEntity blockEntity) {
-            player.openMenu(new SimpleMenuProvider(blockEntity, Component.literal("Shop")), pos);
-            PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageSellPrice(blockEntity.getPrice()));
-        } else {
-            throw new IllegalStateException("Container Provider is missing!");
+            String currencySymbol = ModConfigs.COMMON.currencySymbol.get();
+            ModMessages.sendToPlayer(new S2CMessageCurrencySymbol(currencySymbol), (ServerPlayer) player);
+
+            boolean isOwner = blockEntity.isOwner(player.getUUID());
+            boolean canOpenMenu = blockEntity.slotHasItem();
+
+            ItemStack itemForSale = blockEntity.getItemForSale();
+            int price = blockEntity.getPrice();
+            int stock = blockEntity.getStock();
+            String ownerName = blockEntity.getOwnerName();
+
+            if (isOwner) {
+                ModMessages.sendToPlayer(new S2CMessageItemAndPrice(itemForSale, price, stock, true, ownerName), (ServerPlayer) player);
+                if (!player.isCrouching()) {
+                    openShopOwnerMenu(player, blockEntity, pos);
+                } else {
+                    if (canOpenMenu) {
+                        openShopCustomerMenu(player, blockEntity, pos);
+                    } else {
+                        player.sendSystemMessage(Component.literal("You must finish setting up your shop!").withStyle(ChatFormatting.YELLOW));
+                    }
+                }
+            } else {
+                if (canOpenMenu) {
+                    ModMessages.sendToPlayer(new S2CMessageItemAndPrice(itemForSale, price, stock, false, ownerName), (ServerPlayer) player);
+                    openShopCustomerMenu(player, blockEntity, pos);
+                } else {
+                    player.sendSystemMessage(Component.literal("Shop is Closed! Please try again later!").withStyle(ChatFormatting.RED));
+                }
+            }
         }
         return InteractionResult.sidedSuccess(false);
     }
+
+    private void openShopOwnerMenu(Player player, ShopBlockEntity shopBlockEntity, BlockPos pos) {
+        NetworkHooks.openScreen(
+                (ServerPlayer) player,
+                new MenuProvider() {
+                    @Override
+                    public Component getDisplayName() {
+                        return Component.literal("Shop Owner");
+                    }
+
+                    @Override
+                    public @Nullable AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+                        return new ShopOwnerMenu(pContainerId, pPlayerInventory, shopBlockEntity, shopBlockEntity.getData());
+                    }
+                },
+                buf -> buf.writeBlockPos(pos)
+        );
+    }
+
+    private void openShopCustomerMenu(Player player, ShopBlockEntity shopBlockEntity, BlockPos pos) {
+        NetworkHooks.openScreen(
+                (ServerPlayer) player,
+                new MenuProvider() {
+                    @Override
+                    public Component getDisplayName() {
+                        return Component.literal("Shop Customer");
+                    }
+
+                    @Override
+                    public @Nullable AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+                        return new ShopCustomerMenu(pContainerId, pPlayerInventory, shopBlockEntity);
+                    }
+                },
+                buf -> buf.writeBlockPos(pos)
+        );
+    }
+
+
 }

@@ -1,23 +1,30 @@
 package net.ultimporks.betterecon.network.atm;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.ultimporks.betterecon.Reference;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+import net.ultimporks.betterecon.network.ServerPayloadHandler;
 
-public record C2SMessageWithdraw(int amount) implements CustomPacketPayload {
-    public static final Type<C2SMessageWithdraw> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_withdraw"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<ByteBuf, C2SMessageWithdraw> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            C2SMessageWithdraw::amount,
-            C2SMessageWithdraw::new
-    );
+public class C2SMessageWithdraw {
+    public final int amount;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public C2SMessageWithdraw(int amount) {
+        this.amount = amount;
     }
+
+    public C2SMessageWithdraw(FriendlyByteBuf buf) {
+        this.amount = buf.readInt();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(amount);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ServerPayloadHandler.handleWithdrawMessage(this, context);
+        });
+    }
+
 }

@@ -1,40 +1,24 @@
 package net.ultimporks.betterecon.block.entity;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.items.ItemStackHandler;
 import net.ultimporks.betterecon.BetterEconomy;
-import net.ultimporks.betterecon.configs.ModConfigs;
 import net.ultimporks.betterecon.init.ModBlockEntities;
-import net.ultimporks.betterecon.init.ModItems;
-import net.ultimporks.betterecon.network.S2CMessageCurrencySymbol;
-import net.ultimporks.betterecon.network.shop.S2CMessageItemAndPrice;
-import net.ultimporks.betterecon.util.menu.ShopCustomerMenu;
-import net.ultimporks.betterecon.util.menu.ShopOwnerMenu;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShopBlockEntity extends BlockEntity implements MenuProvider {
+public class ShopBlockEntity extends BlockEntity {
     public final ItemStackHandler stockHandler = new ItemStackHandler(27);
     public final ItemStackHandler registerHandler = new ItemStackHandler(6);
     public final ItemStackHandler itemForSale = new ItemStackHandler(1);
@@ -42,7 +26,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     private int price = 0;
 
     private int tickCounter = 0;
-    protected final ContainerData data;
+    private ContainerData data;
 
     private UUID ownerUUID;
     private String ownerName;
@@ -67,12 +51,16 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         };
     }
 
+    public ContainerData getData() {
+        return data;
+    }
+
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put("inventory", stockHandler.serializeNBT(registries));
-        tag.put("ItemForSale", itemForSale.serializeNBT(registries));
-        tag.put("registerInventory", registerHandler.serializeNBT(registries));
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.put("inventory", stockHandler.serializeNBT());
+        tag.put("ItemForSale", itemForSale.serializeNBT());
+        tag.put("registerInventory", registerHandler.serializeNBT());
         tag.putInt("Price", price);
         tag.putInt("TickCounter", tickCounter);
 
@@ -86,11 +74,11 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        stockHandler.deserializeNBT(registries, tag.getCompound("inventory"));
-        itemForSale.deserializeNBT(registries, tag.getCompound("ItemForSale"));
-        registerHandler.deserializeNBT(registries, tag.getCompound("registerInventory"));
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        stockHandler.deserializeNBT(tag.getCompound("inventory"));
+        itemForSale.deserializeNBT(tag.getCompound("ItemForSale"));
+        registerHandler.deserializeNBT(tag.getCompound("registerInventory"));
         price = tag.getInt("Price");
         tickCounter = tag.getInt("TickCounter");
 
@@ -115,7 +103,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     }
 
 
-    private boolean slotHasItem() {
+    public boolean slotHasItem() {
         return !this.itemForSale.getStackInSlot(0).isEmpty();
     }
 
@@ -125,8 +113,6 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         }
         return ItemStack.EMPTY;
     }
-
-
     public ItemStack getItemForSale() {
         return itemsForSale;
     }
@@ -143,6 +129,8 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         }
         return total;
     }
+
+
 
     public boolean transferCashToShop(int amountEarned, Map<Item, Integer> denominations) {
         // SIMULATION PHASE
@@ -168,7 +156,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
             // Fill existing partial stacks first
             for (int slot = 0; slot < copyHandler.getSlots() && billStack.getCount() > 0; slot++) {
                 ItemStack existing = copyHandler.getStackInSlot(slot);
-                if (!existing.isEmpty() && ItemStack.isSameItemSameComponents(existing, billStack)) {
+                if (!existing.isEmpty() && ItemStack.isSameItemSameTags(existing, billStack)) {
                     billStack = copyHandler.insertItem(slot, billStack, true);
                 }
             }
@@ -200,7 +188,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
             // Fill existing stacks first
             for (int slot = 0; slot < registerHandler.getSlots() && billStack.getCount() > 0; slot++) {
                 ItemStack existing = registerHandler.getStackInSlot(slot);
-                if (!existing.isEmpty() && ItemStack.isSameItemSameComponents(existing, billStack)) {
+                if (!existing.isEmpty() && ItemStack.isSameItemSameTags(existing, billStack)) {
                     billStack = registerHandler.insertItem(slot, billStack, false);
                 }
             }
@@ -297,40 +285,5 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return Component.literal("Shop");
-    }
-
-    @Override
-    public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        String currencySymbol = ModConfigs.COMMON.currencySymbol.get();
-        PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageCurrencySymbol(currencySymbol));
-
-        boolean isOwner = player.getUUID().equals(this.ownerUUID);
-        boolean canOpenMenu = slotHasItem();
-
-        if (isOwner) {
-            if (!player.isCrouching()) {
-                return new ShopOwnerMenu(i, inventory, this, this.data);
-            } else {
-                if (canOpenMenu) {
-                    PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), true, getOwnerName()));
-                    return new ShopCustomerMenu(i, inventory, this);
-                } else {
-                    player.sendSystemMessage(Component.literal("You must finish setting up your shop!").withStyle(ChatFormatting.YELLOW));
-                }
-            }
-        } else {
-            if (canOpenMenu) {
-                PacketDistributor.sendToPlayer((ServerPlayer) player, new S2CMessageItemAndPrice(getItemForSale(), getPrice(), getStock(), false, getOwnerName()));
-                return new ShopCustomerMenu(i, inventory, this);
-            } else {
-                player.sendSystemMessage(Component.literal("Shop is Closed! Please try again later!").withStyle(ChatFormatting.RED));
-            }
-        }
-        return null;
     }
 }

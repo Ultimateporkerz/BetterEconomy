@@ -8,16 +8,15 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.ultimporks.betterecon.Reference;
+import net.ultimporks.betterecon.network.ModMessages;
 import net.ultimporks.betterecon.network.atm.C2SMessageDeposit;
 import net.ultimporks.betterecon.network.atm.C2SMessageWithdraw;
 import net.ultimporks.betterecon.util.menu.ATMMenu;
 import net.ultimporks.betterecon.client.ClientData;
 
 public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
-    private static final ResourceLocation ATM_TEXTURE = ResourceLocation.
-            fromNamespaceAndPath(Reference.MOD_ID, "textures/gui/atm.png");
+    private static final ResourceLocation ATM_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/atm.png");
 
     private ATMPage currentPage = ATMPage.HOME;
 
@@ -234,7 +233,7 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
             }
             // Confirm Button
             if (isMouseOver((int) mouseX, (int) mouseY, confirmClickButtonLeft, confirmClickButtonTop, CLICKABLE_BUTTON_WIDTH, CLICKABLE_BUTTON_HEIGHT)) {
-                PacketDistributor.sendToServer(new C2SMessageDeposit(selectedAmount));
+                ModMessages.sendToServer(new C2SMessageDeposit(selectedAmount));
                 selectedAmount = 0;
                 return true;
             }
@@ -283,7 +282,7 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
             }
             // Confirm Button
             if (isMouseOver((int) mouseX, (int) mouseY, confirmClickButtonLeft, confirmClickButtonTop, CLICKABLE_BUTTON_WIDTH, CLICKABLE_BUTTON_HEIGHT)) {
-                PacketDistributor.sendToServer(new C2SMessageWithdraw(selectedAmount));
+                ModMessages.sendToServer(new C2SMessageWithdraw(selectedAmount));
                 selectedAmount = 0;
                 return true;
             }
@@ -520,6 +519,7 @@ public class ATMScreen extends AbstractContainerScreen<ATMMenu> {
     }
     @Override
     public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(pGuiGraphics);
         super.render(pGuiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(pGuiGraphics, mouseX, mouseY);
     }

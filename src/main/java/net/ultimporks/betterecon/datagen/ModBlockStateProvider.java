@@ -2,10 +2,11 @@ package net.ultimporks.betterecon.datagen;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
 import net.ultimporks.betterecon.Reference;
 import net.ultimporks.betterecon.init.ModBlocks;
 
@@ -17,19 +18,21 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         horizontalBlock(ModBlocks.ATM.get(),
-                new ModelFile.UncheckedModelFile(ResourceLocation.
-                        fromNamespaceAndPath(Reference.MOD_ID, "block/atm")));
+                new ModelFile.UncheckedModelFile(
+                        new ResourceLocation(Reference.MOD_ID, "block/atm")));
 
         horizontalBlock(ModBlocks.SHOP.get(),
-                new ModelFile.UncheckedModelFile(ResourceLocation.
-                        fromNamespaceAndPath(Reference.MOD_ID, "block/shop")));
+                new ModelFile.UncheckedModelFile(
+                        new ResourceLocation(Reference.MOD_ID, "block/shop")));
 
-
-
+        horizontalBlock(ModBlocks.VAULT.get(),
+                new ModelFile.UncheckedModelFile(
+                        new ResourceLocation(Reference.MOD_ID, "block/vault")
+                ));
     }
 
     // Helper Method
-    private void blockWithItem(DeferredBlock<?> deferredBlock) {
-        simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
+    private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
+        simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
     }
 }

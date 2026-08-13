@@ -11,8 +11,8 @@ import net.ultimporks.betterecon.Reference;
 import net.ultimporks.betterecon.util.menu.WalletMenu;
 
 public class WalletScreen extends AbstractContainerScreen<WalletMenu> {
-    private static final ResourceLocation WALLET_TEXTURE = ResourceLocation.
-            fromNamespaceAndPath(Reference.MOD_ID, "textures/gui/wallet.png");
+    private static final ResourceLocation WALLET_TEXTURE =
+            new ResourceLocation(Reference.MOD_ID, "textures/gui/wallet.png");
 
 
     public WalletScreen(WalletMenu menu, Inventory playerInv, Component title) {

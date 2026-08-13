@@ -1,29 +1,41 @@
 package net.ultimporks.betterecon.network.shop;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.ultimporks.betterecon.Reference;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+import net.ultimporks.betterecon.network.ServerPayloadHandler;
 
-public record C2SMessageSaveSellPrice(int sellingPrice, int xPos, int yPos, int zPos) implements CustomPacketPayload {
-    public static final Type<C2SMessageSaveSellPrice> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "message_save_sell_price"));
+import java.util.function.Supplier;
 
-    public static final StreamCodec<ByteBuf, C2SMessageSaveSellPrice> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            C2SMessageSaveSellPrice::sellingPrice,
-            ByteBufCodecs.VAR_INT,
-            C2SMessageSaveSellPrice::xPos,
-            ByteBufCodecs.VAR_INT,
-            C2SMessageSaveSellPrice::yPos,
-            ByteBufCodecs.VAR_INT,
-            C2SMessageSaveSellPrice::zPos,
-            C2SMessageSaveSellPrice::new
-    );
+public class C2SMessageSaveSellPrice {
+    public final int sellingPrice;
+    public final int xPos;
+    public final int yPos;
+    public final int zPos;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public C2SMessageSaveSellPrice(int sellingPrice, int xPos, int yPos, int zPos) {
+        this.sellingPrice = sellingPrice;
+        this.xPos = xPos;
+        this.zPos = zPos;
+        this.yPos = yPos;
+    }
+
+    public C2SMessageSaveSellPrice(FriendlyByteBuf buf) {
+        this.sellingPrice = buf.readInt();
+        this.xPos = buf.readInt();
+        this.zPos = buf.readInt();
+        this.yPos = buf.readInt();
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(sellingPrice);
+        buf.writeInt(xPos);
+        buf.writeInt(zPos);
+        buf.writeInt(yPos);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            ServerPayloadHandler.handleSaveSellPrice(this, context);
+        });
     }
 }

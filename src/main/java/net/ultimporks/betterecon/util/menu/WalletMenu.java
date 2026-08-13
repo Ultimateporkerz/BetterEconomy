@@ -1,5 +1,7 @@
 package net.ultimporks.betterecon.util.menu;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
@@ -9,13 +11,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.ultimporks.betterecon.init.ModDataComponents;
 import net.ultimporks.betterecon.init.ModItems;
 import net.ultimporks.betterecon.init.ModMenuTypes;
 import net.ultimporks.betterecon.item.WalletItem;
 import net.ultimporks.betterecon.util.WalletSavedData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class WalletMenu extends AbstractContainerMenu {
@@ -43,7 +45,7 @@ public class WalletMenu extends AbstractContainerMenu {
         }
         this.walletSlotIndex = index;
 
-        this.walletComponent = walletItem.getComponents().get(ModDataComponents.WALLET_INVENTORY.get());
+        this.walletComponent = loadWalletDataFromNBT(walletItem);
 
         if (walletComponent != null) {
             List<ItemStack> items = walletComponent.getItems();
@@ -73,6 +75,23 @@ public class WalletMenu extends AbstractContainerMenu {
         addPlayerHotbar(playerInventory);
     }
 
+    private WalletSavedData loadWalletDataFromNBT(ItemStack walletItem) {
+        CompoundTag tag = walletItem.getTag();
+        if (tag != null && tag.contains("wallet_data")) {
+            return WalletSavedData.CODEC.parse(NbtOps.INSTANCE, tag.get("wallet_data"))
+                    .result()
+                    .orElse(new WalletSavedData(Collections.emptyList()));
+        }
+        return new WalletSavedData(Collections.emptyList());
+    }
+
+    private void saveWalletDataToNBT(ItemStack walletItem, WalletSavedData walletData) {
+        CompoundTag tag = walletItem.getOrCreateTag();
+        WalletSavedData.CODEC.encodeStart(NbtOps.INSTANCE, walletData)
+                .result()
+                .ifPresent(encodedData -> tag.put("wallet_data", encodedData));
+    }
+
     @Override
     public void removed(Player player) {
         super.removed(player);
@@ -85,8 +104,7 @@ public class WalletMenu extends AbstractContainerMenu {
                 savedItems.add(stack.copy());
             }
         }
-
-        walletStack.set(ModDataComponents.WALLET_INVENTORY.get(), new WalletSavedData(savedItems));
+        saveWalletDataToNBT(walletStack, new WalletSavedData(savedItems));
     }
 
     @Override

@@ -11,15 +11,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.ultimporks.betterecon.Reference;
 import net.ultimporks.betterecon.client.ClientData;
+import net.ultimporks.betterecon.network.ModMessages;
 import net.ultimporks.betterecon.network.shop.C2SMessagePurchase;
 import net.ultimporks.betterecon.util.menu.ShopCustomerMenu;
 
 public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu> {
-    private static final ResourceLocation CUSTOMER_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "textures/gui/shop_customer.png");
+    private static final ResourceLocation CUSTOMER_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/shop_customer.png");
 
     private ItemStack itemForSale;
     private BlockPos shopBlockPos;
@@ -133,6 +132,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(pGuiGraphics);
         super.render(pGuiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(pGuiGraphics, mouseX, mouseY);
         renderPrices(pGuiGraphics);
@@ -336,7 +336,7 @@ public class ShopCustomerScreen extends AbstractContainerScreen<ShopCustomerMenu
         if (isMouseOver((int) mouseX, (int) mouseY, confirmButtonLeft, confirmButtonTop, CONFIRM_BUTTON_WIDTH, CONFIRM_BUTTON_HEIGHT)) {
             if (quantity != 0) {
                 if (!customerView) {
-                    PacketDistributor.sendToServer(new C2SMessagePurchase(itemForSale, totalPrice, quantity, shopBlockPos));
+                    ModMessages.sendToServer(new C2SMessagePurchase(itemForSale, totalPrice, quantity, itemForSale.getCount(), shopBlockPos));
                     return true;
                 } else {
                     minecraft.player.sendSystemMessage(Component.literal("You cannot buy from your own Shop!").withStyle(ChatFormatting.RED));
